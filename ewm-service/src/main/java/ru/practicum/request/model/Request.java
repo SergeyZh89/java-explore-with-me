@@ -2,7 +2,6 @@ package ru.practicum.request.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.event.enums.EventState;
 import ru.practicum.event.enums.RequestState;
 
 import javax.persistence.*;

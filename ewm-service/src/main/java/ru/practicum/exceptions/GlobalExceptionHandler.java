@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleUserNotFoundException(final EventNotFoundException e, WebRequest request) {
+    public ApiError handleUserNotFoundException(final EventNotFoundException e) {
         log.info("перехвачено исключение: " + e.getMessage());
         return new ApiError.ApiErrorBuilder()
                 .errors(List.of(e.getClass().getName()))
@@ -53,14 +53,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleCategoryNotFoundException(final CategoryNotFoundException e, WebRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleCategoryNotFoundException(final CategoryNotFoundException e) {
         log.info("перехвачено исключение: " + e.getMessage());
         return new ApiError.ApiErrorBuilder()
                 .errors(List.of(e.getClass().getName()))
                 .message(e.getLocalizedMessage())
                 .reason("The required object was not found.")
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.BAD_REQUEST)
                 .build();
     }
 

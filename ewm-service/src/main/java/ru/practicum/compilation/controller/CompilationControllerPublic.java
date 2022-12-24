@@ -27,7 +27,7 @@ public class CompilationControllerPublic {
                                              @RequestParam(name = "from", defaultValue = "0", required = false) int from,
                                              @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
         log.info("Получен запрос на подборки событий");
-        int page = from/ size;
+        int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
         return compilationServicePublic.getCompilations(pinned, pageable);
     }

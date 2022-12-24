@@ -12,7 +12,6 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.mappers.CompilationMapper;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +56,7 @@ public class CompilationServiceAdminImpl implements CompilationServiceAdmin {
         Compilation compilation = compilationRepository.findById(complId)
                 .orElseThrow(() -> new CompilationException("Подборка не найдена"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(()-> new EventNotFoundException(eventId));
+                .orElseThrow(() -> new EventNotFoundException(eventId));
         compilation.getEvents().add(event);
         return compilationRepository.save(compilation);
     }

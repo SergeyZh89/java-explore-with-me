@@ -108,7 +108,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
             List<Request> requests = requestRepository.findAll().stream()
                     .filter(request -> request.getStatus() == RequestState.PENDING && request.getEvent() == eventId)
                     .map(request -> {
-                        request.setStatus(RequestState.CANCELED);
+                        request.setStatus(RequestState.REJECTED);
                         return request;
                     })
                     .collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
                 .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new RequestNotFountException(reqId));
-        request.setStatus(RequestState.CANCELED);
+        request.setStatus(RequestState.REJECTED);
         return requestRepository.save(request);
     }
 

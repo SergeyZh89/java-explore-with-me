@@ -13,7 +13,7 @@ import javax.validation.constraints.Email;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "users")
-public class User{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ReadOnlyProperty

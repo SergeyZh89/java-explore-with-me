@@ -3,17 +3,13 @@ package ru.practicum.event.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.category.model.Category;
-import ru.practicum.compilation.model.Compilation;
 import ru.practicum.event.enums.EventState;
 import ru.practicum.location.Location;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.awt.print.Book;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

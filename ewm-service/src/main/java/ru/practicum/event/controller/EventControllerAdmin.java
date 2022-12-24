@@ -26,13 +26,13 @@ public class EventControllerAdmin {
     }
 
     @GetMapping
-    public List<Event> getEvents(@RequestParam(name = "users") List<Long> usersId,
-                                 @RequestParam(name = "states") List<String> states,
-                                 @RequestParam(name = "categories") List<Long> categories,
-                                 @RequestParam(name = "rangeStart") String rangeStart,
-                                 @RequestParam(name = "rangeEnd") String rangeEnd,
-                                 @RequestParam(name = "from", defaultValue = "0") int from,
-                                 @RequestParam(name = "size", defaultValue = "10") int size) {
+    public List<Event> getEvents(@RequestParam(name = "users", required = false) List<Long> usersId,
+                                 @RequestParam(name = "states", required = false, defaultValue = "new List<String>") List<String> states,
+                                 @RequestParam(name = "categories", required = false) List<Long> categories,
+                                 @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                 @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                 @RequestParam(name = "from", required = false, defaultValue = "0") int from,
+                                 @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         log.info("Получен админский запрос на получение событий");
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);

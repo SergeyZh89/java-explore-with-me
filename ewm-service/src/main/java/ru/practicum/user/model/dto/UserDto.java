@@ -4,7 +4,9 @@ import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
@@ -13,9 +15,10 @@ import javax.validation.constraints.Positive;
 @Builder(toBuilder = true)
 public class UserDto {
     @ReadOnlyProperty
-    @Positive
+    @PositiveOrZero
     private long id;
 
+    @NotNull
     private String name;
 
     @Email

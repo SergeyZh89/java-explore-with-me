@@ -10,7 +10,7 @@ import ru.practicum.event.model.dto.NewEventDto;
 public interface EventMapper {
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-//    default Event toEvent(EventDto eventDto) {
+    //    default Event toEvent(EventDto eventDto) {
 //        return new Event().toBuilder()
 //
 //    }

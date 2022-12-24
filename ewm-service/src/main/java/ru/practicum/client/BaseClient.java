@@ -26,7 +26,7 @@ public class BaseClient {
         return makeAndSendRequest(GET, path, userId, parameters, null);
     }
 
-    protected <T> ResponseEntity<Object> post (String path, T body) {
+    protected <T> ResponseEntity<Object> post(String path, T body) {
         return post(path, null, null, body);
     }
 

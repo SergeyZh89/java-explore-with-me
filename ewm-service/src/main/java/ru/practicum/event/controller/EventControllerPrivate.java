@@ -64,7 +64,7 @@ public class EventControllerPrivate {
 
     @GetMapping("/{eventId}/requests")
     public List<Request> getOtherRequestsByEventAndCurrentUser(@PathVariable @Positive long userId,
-                                                                 @PathVariable @Positive long eventId) {
+                                                               @PathVariable @Positive long eventId) {
         log.info("Получен запрос на информацию о запросах на участие в событии {} пользователя {}", eventId, userId);
         return eventServicePrivate.getOtherRequestsByEventAndCurrentUser(userId, eventId);
     }

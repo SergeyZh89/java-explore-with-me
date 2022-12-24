@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         Request request = requestRepository.findRequestByRequester(userId)
                 .orElseThrow(() -> new RequestNotFountException(requestId));
 
-        request.setStatus(RequestState.CANCELED);
+        request.setStatus(RequestState.REJECTED);
 
         return requestRepository.save(request);
     }

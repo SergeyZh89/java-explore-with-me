@@ -2,8 +2,8 @@ DROP table if exists users, categories, events, compilations_events, locations, 
 CREATE TABLE IF NOT EXISTS users
 (
     id    bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    name  VARCHAR                             NOT NULL,
-    email VARCHAR                             NOT NULL,
+    name  VARCHAR,
+    email VARCHAR,
     CONSTRAINT pk_user PRIMARY KEY (id),
     CONSTRAINT QK_USER_EMAIL unique (email)
 );
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS compilations
 
 CREATE TABLE IF NOT EXISTS compilations_events
 (
-    events_id bigint references events (id) ON DELETE CASCADE,
+    events_id      bigint references events (id) ON DELETE CASCADE,
     compilation_id bigint references compilations (id) ON DELETE CASCADE,
     CONSTRAINT events_comlp_pk primary key (events_id, compilation_id)
 );

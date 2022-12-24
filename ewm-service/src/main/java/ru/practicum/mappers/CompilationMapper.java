@@ -5,9 +5,6 @@ import org.mapstruct.factory.Mappers;
 import ru.practicum.compilation.model.Compilation;
 import ru.practicum.compilation.model.dto.CompilationDto;
 import ru.practicum.compilation.model.dto.NewCompilationDto;
-import ru.practicum.event.model.Event;
-
-import java.util.stream.Collectors;
 
 @Mapper
 public interface CompilationMapper {
@@ -20,6 +17,8 @@ public interface CompilationMapper {
                 .pinned(newCompilationDto.isPinned())
                 .title(newCompilationDto.getTitle())
                 .build();
-    };
+    }
+
+    ;
 
 }

@@ -1,11 +1,5 @@
 version: '3.1'
 services:
-#  gateway:
-#    build: gateway
-#    image: gateway
-#    ports:
-#      - "9091:9091"
-
   stats-server:
     ports:
       - "9090:9090"
@@ -14,7 +8,7 @@ services:
     image: postgres:14-alpine
     container_name: stats_container
     ports:
-      - "7654:6543"
+      - "6541:5431"
     environment:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=root

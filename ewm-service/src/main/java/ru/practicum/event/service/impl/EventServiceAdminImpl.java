@@ -13,12 +13,16 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServiceAdmin;
 import ru.practicum.request.AdminUpdateEventRequest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventServiceAdminImpl implements EventServiceAdmin {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss");
 
     @Autowired
     public EventServiceAdminImpl(EventRepository eventRepository,
@@ -29,7 +33,13 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
 
     @Override
     public List<Event> getEventsByFilter(List<Long> usersId, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Pageable pageable) {
-        return null;
+        return eventRepository.findAll(pageable).stream()
+                .filter(event -> usersId.contains(event.getInitiator().getId())
+                        && states.contains(event.getState().name())
+                        && categories.contains(event.getCategory().getId())
+                        && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
+                        && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : true)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -38,7 +48,7 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         event.setAnnotation(adminUpdateEventRequest.getAnnotation());
         Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
-                .orElseThrow(()-> new CategoryNotFoundException(adminUpdateEventRequest.getCategory()));
+                .orElseThrow(() -> new CategoryNotFoundException(adminUpdateEventRequest.getCategory()));
         event.setCategory(category);
         event.setDescription(adminUpdateEventRequest.getDescription());
         event.setEventDate(adminUpdateEventRequest.getEventDate());

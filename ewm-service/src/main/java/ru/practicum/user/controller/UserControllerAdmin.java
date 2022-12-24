@@ -10,6 +10,7 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.model.dto.UserDto;
 import ru.practicum.user.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class UserControllerAdmin {
     }
 
     @PostMapping
-    public User addUser(@RequestBody UserDto userDto) {
+    public User addUser(@RequestBody @Valid UserDto userDto) {
         log.info("Получен запрос на добавление пользователя {}", userDto.getName());
         return userService.addUser(userDto);
     }
