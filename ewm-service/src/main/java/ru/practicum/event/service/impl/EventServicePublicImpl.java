@@ -93,7 +93,7 @@ public class EventServicePublicImpl implements EventServicePublic {
                 .uri(endPointPath)
                 .app("events")
                 .build();
-        eventClient.addHit(endPointHitDto);
+//        eventClient.addHit(endPointHitDto);
         return eventList;
     }
 
@@ -104,7 +104,7 @@ public class EventServicePublicImpl implements EventServicePublic {
                 .uri(endPointPath)
                 .app("events")
                 .build();
-        eventClient.addHit(endPointHitDto);
+//        eventClient.addHit(endPointHitDto);
         return eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 }
