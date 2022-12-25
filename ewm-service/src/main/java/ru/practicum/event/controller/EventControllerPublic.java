@@ -31,7 +31,7 @@ public class EventControllerPublic {
                                          @RequestParam(name = "paid", required = false) boolean paid,
                                          @RequestParam(name = "rangeStart", required = false) String rangeStart,
                                          @RequestParam(name = "rangeEnf", required = false) String rangeEnd,
-                                         @RequestParam(name = "onlyAvailable", defaultValue = "false") boolean onlyAvailable,
+                                         @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") boolean onlyAvailable,
                                          @RequestParam(name = "sort", required = false) String sort,
                                          @RequestParam(name = "from", required = false, defaultValue = "0") int from,
                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
@@ -45,7 +45,7 @@ public class EventControllerPublic {
         Pageable pageable;
         if (sort != null) {
             String sortFound = EventSort.getSort(sort);
-            pageable = PageRequest.of(page, size, Sort.by(sortFound).descending());
+            pageable = PageRequest.of(page, size, Sort.by(sortFound));
         } else {
             pageable = PageRequest.of(page, size);
         }

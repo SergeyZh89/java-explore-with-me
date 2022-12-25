@@ -137,16 +137,4 @@ public class EventServicePrivateImpl implements EventServicePrivate {
         request.setStatus(RequestState.REJECTED);
         return requestRepository.save(request);
     }
-
-    private static Event updateEvent(Event event, EventDto eventDto) {
-        event.setAnnotation(eventDto.getAnnotation());
-        event.setDescription(eventDto.getDescription());
-        if (eventDto.getEventDate().isBefore(eventDto.getEventDate().plusHours(2))) {
-            throw new ValidatorException("Only pending or canceled events can be changed");
-        }
-        event.setEventDate(eventDto.getEventDate());
-        event.setPaid(eventDto.isPaid());
-        event.setTitle(eventDto.getTitle());
-        return event;
-    }
 }
