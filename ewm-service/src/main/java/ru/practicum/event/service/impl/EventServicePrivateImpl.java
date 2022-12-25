@@ -52,13 +52,17 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public Event updateEventByCurrentUser(long userId, EventDto eventDto) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(userId, eventDto.getId())
-                .orElseThrow(() -> new EventNotFoundException(eventDto.getId()));
+        Event event = eventRepository.findEventByIdAndInitiator_Id(userId, eventDto.getEventId())
+                .orElseThrow(() -> new EventNotFoundException(eventDto.getEventId()));
+        Category category = categoryRepository.findById(eventDto.getCategory())
+                .orElseThrow(() -> new CategoryNotFoundException(eventDto.getCategory()));
+        Event eventUpdated = EventMapper.INSTANCE.partialUpdate(eventDto, event);
+        eventUpdated.setCategory(category);
         if (event.getState().equals(EventState.PENDING)) {
-            return updateEvent(event, eventDto);
+            return eventRepository.save(eventUpdated);
         } else if (event.getState().equals(EventState.CANCELED)) {
             event.setState(EventState.PENDING);
-            return updateEvent(event, eventDto);
+            return eventRepository.save(eventUpdated);
         } else {
             throw new ValidatorException("Only pending or canceled events can be changed");
         }
@@ -108,7 +112,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
             List<Request> requests = requestRepository.findAll().stream()
                     .filter(request -> request.getStatus() == RequestState.PENDING && request.getEvent() == eventId)
                     .map(request -> {
-                        request.setStatus(RequestState.CANCELED);
+                        request.setStatus(RequestState.REJECTED);
                         return request;
                     })
                     .collect(Collectors.toList());
@@ -130,7 +134,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
                 .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new RequestNotFountException(reqId));
-        request.setStatus(RequestState.CANCELED);
+        request.setStatus(RequestState.REJECTED);
         return requestRepository.save(request);
     }
 

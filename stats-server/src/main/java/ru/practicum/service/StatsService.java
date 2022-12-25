@@ -1,14 +1,13 @@
 package ru.practicum.service;
 
 import ru.practicum.model.EndPointHit;
+import ru.practicum.model.ViewStats;
 import ru.practicum.model.dto.EndPointHitDto;
 
 import java.util.List;
 
 public interface StatsService {
-    EndPointHitDto addHit(EndPointHitDto endPointHitDto);
+    EndPointHit addHit(EndPointHitDto endPointHitDto);
 
-    List<EndPointHit> getStats(String start, String end, List<String> uris, boolean unique);
-
-    List<EndPointHit> getStats(String start, String end, boolean unique);
+    List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique);
 }

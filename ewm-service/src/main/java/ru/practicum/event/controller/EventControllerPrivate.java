@@ -39,7 +39,7 @@ public class EventControllerPrivate {
     @PatchMapping
     public Event updateEventByCurrentUser(@PathVariable @Positive long userId,
                                           @RequestBody @Valid EventDto eventDto) {
-        log.info("Получен запрос на обновление события {} от пользователя {}", eventDto.getId(), userId);
+        log.info("Получен запрос на обновление события {} от пользователя {}", eventDto.getEventId(), userId);
         return eventServicePrivate.updateEventByCurrentUser(userId, eventDto);
     }
 
