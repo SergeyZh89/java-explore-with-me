@@ -38,7 +38,7 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
                         && states.contains(event.getState().name())
                         && categories.contains(event.getCategory().getId())
                         && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                        && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : true)
+                        && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
                 .collect(Collectors.toList());
     }
 

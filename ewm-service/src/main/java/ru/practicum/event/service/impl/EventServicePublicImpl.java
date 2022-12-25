@@ -43,7 +43,7 @@ public class EventServicePublicImpl implements EventServicePublic {
                             && event.isPaid() == paid
                             && event.getConfirmedRequests() < event.getParticipantLimit()
                             && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : true)
+                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
                     .collect(Collectors.toList());
         } else {
             eventList = eventRepository.findAll(pageable).stream()
@@ -51,7 +51,7 @@ public class EventServicePublicImpl implements EventServicePublic {
                             && event.getAnnotation().equalsIgnoreCase(text)
                             && event.isPaid() == paid
                             && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : true)
+                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
                     .collect(Collectors.toList());
         }
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()

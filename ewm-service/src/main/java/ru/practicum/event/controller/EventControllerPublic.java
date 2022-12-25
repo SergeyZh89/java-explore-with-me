@@ -45,7 +45,7 @@ public class EventControllerPublic {
         Pageable pageable;
         if (sort != null) {
             String sortFound = EventSort.getSort(sort);
-            pageable = PageRequest.of(page, size, Sort.by(sortFound));
+            pageable = PageRequest.of(page, size, Sort.by(sortFound).descending());
         } else {
             pageable = PageRequest.of(page, size);
         }
