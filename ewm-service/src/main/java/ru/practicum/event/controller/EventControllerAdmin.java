@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.model.Event;
@@ -35,7 +36,7 @@ public class EventControllerAdmin {
                                  @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         log.info("Получен админский запрос на получение событий");
         int page = from / size;
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         return eventServiceAdmin.getEventsByFilter(usersId, states, categories, rangeStart, rangeEnd, pageable);
     }
 

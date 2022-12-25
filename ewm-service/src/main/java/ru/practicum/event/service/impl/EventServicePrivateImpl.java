@@ -52,7 +52,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public Event updateEventByCurrentUser(long userId, EventDto eventDto) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(userId, eventDto.getEventId())
+        Event event = eventRepository.findEventByIdAndInitiator_Id(eventDto.getEventId(), userId)
                 .orElseThrow(() -> new EventNotFoundException(eventDto.getEventId()));
         Category category = categoryRepository.findById(eventDto.getCategory())
                 .orElseThrow(() -> new CategoryNotFoundException(eventDto.getCategory()));
