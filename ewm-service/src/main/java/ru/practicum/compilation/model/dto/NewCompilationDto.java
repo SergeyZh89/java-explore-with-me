@@ -3,7 +3,6 @@ package ru.practicum.compilation.model.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Set;
 
 @Getter
