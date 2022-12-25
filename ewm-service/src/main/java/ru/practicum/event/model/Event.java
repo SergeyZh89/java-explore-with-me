@@ -2,6 +2,7 @@ package ru.practicum.event.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.enums.EventState;
 import ru.practicum.location.Location;
@@ -25,6 +26,7 @@ public class Event {
     private long id;
 
     @Column(name = "annotation")
+    @Length(min = 20, max = 2000)
     private String annotation;
 
     @ManyToOne
@@ -40,6 +42,7 @@ public class Event {
     private LocalDateTime createdOn = LocalDateTime.now();
 
     @Column(name = "description")
+    @Length(min = 20, max = 7000)
     private String description;
 
     @Column(name = "event_date")
@@ -75,6 +78,7 @@ public class Event {
     private EventState state = EventState.PENDING;
 
     @Column(name = "title")
+    @Length(min = 3, max = 120)
     private String title;
 
     @Column(name = "views")

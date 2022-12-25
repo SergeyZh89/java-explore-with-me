@@ -2,8 +2,8 @@ DROP table if exists users, categories, events, compilations_events, locations, 
 CREATE TABLE IF NOT EXISTS users
 (
     id    bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    name  VARCHAR,
-    email VARCHAR,
+    name  text,
+    email varchar,
     CONSTRAINT pk_user PRIMARY KEY (id),
     CONSTRAINT QK_USER_EMAIL unique (email)
 );
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS locations
 CREATE TABLE IF NOT EXISTS categories
 (
     id   bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    name VARCHAR                             NOT NULL,
+    name varchar,
     CONSTRAINT pk_category PRIMARY KEY (id)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS events
     participant_limit  bigint,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     request_moderation boolean,
-    state              varchar,
+    state              text,
     title              text,
     views              bigint,
     CONSTRAINT pk_event primary key (id),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS requests
     created      TIMESTAMP WITHOUT TIME ZONE,
     event_id     bigint,
     requester_id bigint,
-    status       varchar,
+    status       text,
     CONSTRAINT pk_request primary key (id),
     CONSTRAINT fk_event foreign key (event_id) references events (id),
     CONSTRAINT fk_user foreign key (requester_id) references users (id)
