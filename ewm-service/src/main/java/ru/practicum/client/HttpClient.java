@@ -10,7 +10,7 @@ import java.util.Map;
 import static org.springframework.http.HttpMethod.GET;
 
 public class HttpClient {
-    protected final RestTemplate rest;
+    private final RestTemplate rest;
 
     public HttpClient(RestTemplate rest) {
         this.rest = rest;
@@ -36,7 +36,7 @@ public class HttpClient {
         return prepareGatewayResponse(ewmServerResponse);
     }
 
-    private ResponseEntity prepareGatewayResponse(ResponseEntity<Object> response) {
+    private static ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }

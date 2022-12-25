@@ -24,8 +24,8 @@ public class EventClient extends HttpClient {
                 .build());
     }
 
-    public ResponseEntity<Object> addHit(EndPointHitDto endPointHitDto) {
-        return post("/hit", endPointHitDto);
+    public void addHit(EndPointHitDto endPointHitDto) {
+        post("/hit", endPointHitDto);
     }
 
     public ResponseEntity<Object> getViews(String start, String end, List<String> uris, boolean unique) {
