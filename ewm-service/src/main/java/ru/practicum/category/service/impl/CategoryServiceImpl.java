@@ -9,9 +9,11 @@ import ru.practicum.category.model.dto.CategoryDto;
 import ru.practicum.category.model.dto.NewCategoryDto;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.category.service.CategoryService;
+import ru.practicum.exceptions.ConflictException;
 import ru.practicum.mappers.CategoryMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(NewCategoryDto newCategoryDto) {
+        Optional<Category> categoryFound = categoryRepository.findByName(newCategoryDto.getName());
+        if (categoryFound.isPresent()) {
+            throw new ConflictException("Такая директория уже существует");
+        }
         Category category = CategoryMapper.INSTANCE.toCategory(newCategoryDto);
         return categoryRepository.save(category);
     }
@@ -43,6 +49,13 @@ public class CategoryServiceImpl implements CategoryService {
     public Category patchCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new CategoryNotFoundException(categoryDto.getId()));
+        Optional<Category> categoryDuplicate = categoryRepository.findByName(categoryDto.getName());
+        if (categoryDuplicate.isPresent()) {
+            throw new ConflictException("Такая директория уже существует");
+        }
+        if (category.getName().equals(categoryDto.getName())) {
+            throw new ConflictException("Такое имя уже существует");
+        }
         category.setName(categoryDto.getName());
         return categoryRepository.save(category);
     }

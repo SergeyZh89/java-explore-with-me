@@ -8,6 +8,7 @@ import ru.practicum.event.enums.RequestState;
 import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
+import ru.practicum.exceptions.ConflictException;
 import ru.practicum.exceptions.ValidatorException;
 import ru.practicum.mappers.UserMapper;
 import ru.practicum.request.exception.RequestNotFountException;
@@ -44,6 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(UserDto userDto) {
+        Optional<User> userFound = userRepository.findByEmail(userDto.getEmail());
+        if (userFound.isPresent()) {
+            throw new ConflictException("Пользователь с таким email уже существует");
+        }
         User user = UserMapper.INSTANCE.toUser(userDto);
         return userRepository.save(user);
     }

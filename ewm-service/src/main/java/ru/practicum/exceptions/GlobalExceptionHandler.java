@@ -29,6 +29,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleConflictException(final ConflictException e) {
+        log.info("перехвачено исключение: " + e.getMessage());
+        return new ApiError.ApiErrorBuilder()
+                .errors(List.of(e.getClass().getName()))
+                .message(e.getLocalizedMessage())
+                .reason("The required object was found.")
+                .status(HttpStatus.CONFLICT)
+                .build();
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleUserNotFoundException(final UserNotFoundException e, WebRequest request) {
         log.info("перехвачено исключение: " + e.getMessage());

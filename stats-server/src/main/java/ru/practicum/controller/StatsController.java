@@ -21,11 +21,13 @@ public class StatsController {
                                       @RequestParam String end,
                                       @RequestParam(required = false) List<String> uris,
                                       @RequestParam(required = false, defaultValue = "false") boolean unique) {
+        log.info("Получен запрос просмотр статистики");
         return statsService.getStats(start, end, uris, unique);
     }
 
     @PostMapping("/hit")
     public EndPointHitDto addHit(@RequestBody EndPointHitDto endPointHitDto) {
+        log.info("Получен запрос на добавление EndPoint о просмотре события");
         return statsService.addHit(endPointHitDto);
     }
 }

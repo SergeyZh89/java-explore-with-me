@@ -7,6 +7,7 @@ import ru.practicum.compilation.model.Compilation;
 import ru.practicum.compilation.model.dto.NewCompilationDto;
 import ru.practicum.compilation.service.CompilationServiceAdmin;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 @RestController
@@ -21,7 +22,7 @@ public class CompilationControllerAdmin {
     }
 
     @PostMapping
-    public Compilation addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public Compilation addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
         log.info("Получен запрос на добавление новой подборки");
         return compilationServiceAdmin.addCompilation(newCompilationDto);
     }
