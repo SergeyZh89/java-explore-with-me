@@ -36,24 +36,58 @@ public class EventServicePublicImpl implements EventServicePublic {
                                          String clientIp,
                                          String endPointPath) {
         List<Event> eventList;
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        if (rangeStart == null) {
+            startDate = LocalDateTime.now();
+        } else {
+            startDate = LocalDateTime.parse(rangeStart, FORMATTER);
+        }
+        if (rangeEnd == null) {
+            endDate = LocalDateTime.MAX;
+        } else {
+            endDate = LocalDateTime.parse(rangeEnd, FORMATTER);
+        }
+
         if (onlyAvailable) {
-            eventList = eventRepository.findAll(pageable).stream()
+            eventList = eventRepository.findAll().stream()
                     .filter(event -> categories.contains(event.getCategory().getId())
                             && event.getAnnotation().equalsIgnoreCase(text)
                             && event.isPaid() == paid
                             && event.getConfirmedRequests() < event.getParticipantLimit()
-                            && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
+                            && event.getEventDate().isAfter(startDate)
+                            && event.getEventDate().isBefore(endDate))
                     .collect(Collectors.toList());
         } else {
-            eventList = eventRepository.findAll(pageable).stream()
+            eventList = eventRepository.findAll().stream()
                     .filter(event -> categories.contains(event.getCategory().getId())
                             && event.getAnnotation().equalsIgnoreCase(text)
                             && event.isPaid() == paid
-                            && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
+                            && event.getEventDate().isAfter(startDate)
+                            && event.getEventDate().isBefore(endDate))
                     .collect(Collectors.toList());
         }
+
+
+//        if (onlyAvailable) {
+//            eventList = eventRepository.findAll(pageable).stream()
+//                    .filter(event -> categories.contains(event.getCategory().getId())
+//                            && event.getAnnotation().equalsIgnoreCase(text)
+//                            && event.isPaid() == paid
+//                            && event.getConfirmedRequests() < event.getParticipantLimit()
+//                            && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
+//                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
+//                    .collect(Collectors.toList());
+//        } else {
+//            eventList = eventRepository.findAll(pageable).stream()
+//                    .filter(event -> categories.contains(event.getCategory().getId())
+//                            && event.getAnnotation().equalsIgnoreCase(text)
+//                            && event.isPaid() == paid
+//                            && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
+//                            && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
+//                    .collect(Collectors.toList());
+//        }
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(clientIp)
                 .uri(endPointPath)
