@@ -65,14 +65,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleCategoryNotFoundException(final CategoryNotFoundException e) {
         log.info("перехвачено исключение: " + e.getMessage());
         return new ApiError.ApiErrorBuilder()
                 .errors(List.of(e.getClass().getName()))
                 .message(e.getLocalizedMessage())
                 .reason("The required object was not found.")
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.NOT_FOUND)
                 .build();
     }
 

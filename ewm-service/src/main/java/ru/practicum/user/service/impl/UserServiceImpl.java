@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers(List<Long> ids, Pageable pageable) {
-        return userRepository.findAll();
+        return userRepository.findAllById(ids);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         Request request = requestRepository.findRequestByRequester(userId)
                 .orElseThrow(() -> new RequestNotFountException(requestId));
 
-        request.setStatus(RequestState.REJECTED);
+        request.setStatus(RequestState.CANCELED);
 
         return requestRepository.save(request);
     }
