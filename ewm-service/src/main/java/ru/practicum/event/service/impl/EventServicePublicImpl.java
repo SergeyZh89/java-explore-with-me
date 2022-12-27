@@ -76,7 +76,7 @@ public class EventServicePublicImpl implements EventServicePublic {
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
-                .app("234")
+                .app("main-service")
                 .build();
         eventClient.addHit(endPointHitDto);
         return eventList;
