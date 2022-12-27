@@ -83,11 +83,4 @@ public class Event {
 
     @Column(name = "views")
     private long views;
-
-//    @ManyToMany
-//    @JoinTable(name="compilations_events",
-//            joinColumns = @JoinColumn(name="event_id", referencedColumnName="id"),
-//            inverseJoinColumns = @JoinColumn(name="compl_id", referencedColumnName="id")
-//    )
-//    private List<Compilation> compilations;
 }

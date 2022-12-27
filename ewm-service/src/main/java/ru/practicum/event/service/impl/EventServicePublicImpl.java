@@ -68,24 +68,29 @@ public class EventServicePublicImpl implements EventServicePublic {
                             && event.getEventDate().isBefore(endDate))
                     .collect(Collectors.toList());
         }
+        for (Event event : eventList) {
+
+        }
 
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(clientIp)
                 .uri(endPointPath)
-                .app("events")
+                .app("234")
                 .build();
         eventClient.addHit(endPointHitDto);
+
         return eventList;
     }
 
     @Override
     public Event getEvent(long eventId, String clientIp, String endPointPath) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(clientIp)
                 .uri(endPointPath)
-                .app("events")
+                .app(event.getTitle())
                 .build();
         eventClient.addHit(endPointHitDto);
-        return eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        return event;
     }
 }

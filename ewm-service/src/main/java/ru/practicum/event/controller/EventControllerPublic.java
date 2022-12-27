@@ -12,6 +12,8 @@ import ru.practicum.event.service.EventServicePublic;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,7 @@ public class EventControllerPublic {
 
     @GetMapping
     public List<Event> getEventsByFilter(@RequestParam(name = "text", required = false) String text,
-                                         @RequestParam(name = "categories", required = false, defaultValue = "new List<Long>") List<Long> categories,
+                                         @RequestParam(name = "categories", required = false, defaultValue = "") List<Long> categories,
                                          @RequestParam(name = "paid", required = false) boolean paid,
                                          @RequestParam(name = "rangeStart", required = false) String rangeStart,
                                          @RequestParam(name = "rangeEnf", required = false) String rangeEnd,
@@ -37,8 +39,8 @@ public class EventControllerPublic {
                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                          HttpServletRequest request) {
         log.info("Получен запрос на получение событий по фильтру");
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
+//        log.info("client ip: {}", request.getRemoteAddr());
+//        log.info("endpoint path: {}", request.getRequestURI());
         String clientIp = request.getRemoteAddr();
         String endPointPath = request.getRequestURI();
         int page = from / size;
