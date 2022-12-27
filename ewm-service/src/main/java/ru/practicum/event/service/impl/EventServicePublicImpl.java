@@ -8,9 +8,10 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.model.dto.EndPointHitDto;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServicePublic;
+import ru.practicum.mappers.DateTimeMapper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class EventServicePublicImpl implements EventServicePublic {
     private final EventRepository eventRepository;
     private final EventClient eventClient;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss");
 
     public EventServicePublicImpl(EventRepository eventRepository, EventClient eventClient) {
         this.eventRepository = eventRepository;
@@ -33,8 +33,8 @@ public class EventServicePublicImpl implements EventServicePublic {
                                          String rangeEnd,
                                          boolean onlyAvailable,
                                          Pageable pageable,
-                                         String clientIp,
-                                         String endPointPath) {
+                                         HttpServletRequest request) {
+
         List<Event> eventList;
         LocalDateTime startDate;
         LocalDateTime endDate;
@@ -42,12 +42,12 @@ public class EventServicePublicImpl implements EventServicePublic {
         if (rangeStart == null) {
             startDate = LocalDateTime.now();
         } else {
-            startDate = LocalDateTime.parse(rangeStart, FORMATTER);
+            startDate = DateTimeMapper.INSTANCE.toTime(rangeStart);
         }
         if (rangeEnd == null) {
             endDate = LocalDateTime.MAX;
         } else {
-            endDate = LocalDateTime.parse(rangeEnd, FORMATTER);
+            endDate = DateTimeMapper.INSTANCE.toTime(rangeEnd);
         }
 
         if (onlyAvailable) {
@@ -68,29 +68,31 @@ public class EventServicePublicImpl implements EventServicePublic {
                             && event.getEventDate().isBefore(endDate))
                     .collect(Collectors.toList());
         }
-//        for (Event event : eventList) {
-//
-//        }
+        for (Event event : eventList) {
+            long views = event.getViews() + 1;
+            event.setViews(views);
+        }
 
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
-                .ip(clientIp)
-                .uri(endPointPath)
+                .ip(request.getRemoteAddr())
+                .uri(request.getRequestURI())
                 .app("234")
                 .build();
         eventClient.addHit(endPointHitDto);
-
         return eventList;
     }
 
     @Override
-    public Event getEvent(long eventId, String clientIp, String endPointPath) {
+    public Event getEvent(long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
-                .ip(clientIp)
-                .uri(endPointPath)
+                .ip(request.getRemoteAddr())
+                .uri(request.getRequestURI())
                 .app(event.getTitle())
                 .build();
         eventClient.addHit(endPointHitDto);
+        long views = event.getViews() + 1;
+        event.setViews(views);
         return event;
     }
 }

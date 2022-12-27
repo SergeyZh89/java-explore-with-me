@@ -3,6 +3,7 @@ package ru.practicum.event.service;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.event.model.Event;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventServicePublic {
@@ -13,9 +14,8 @@ public interface EventServicePublic {
                                   String rangeEnd,
                                   boolean onlyAvailable,
                                   Pageable pageable,
-                                  String clientIp,
-                                  String endPointPath
+                                  HttpServletRequest request
     );
 
-    Event getEvent(long eventId, String clientIp, String endPointPath);
+    Event getEvent(long eventId, HttpServletRequest request);
 }

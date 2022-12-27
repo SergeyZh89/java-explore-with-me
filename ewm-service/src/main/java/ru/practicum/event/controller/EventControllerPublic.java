@@ -37,10 +37,6 @@ public class EventControllerPublic {
                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                          HttpServletRequest request) {
         log.info("Получен запрос на получение событий по фильтру");
-//        log.info("client ip: {}", request.getRemoteAddr());
-//        log.info("endpoint path: {}", request.getRequestURI());
-        String clientIp = request.getRemoteAddr();
-        String endPointPath = request.getRequestURI();
         int page = from / size;
         Pageable pageable;
         if (sort != null) {
@@ -49,16 +45,12 @@ public class EventControllerPublic {
         } else {
             pageable = PageRequest.of(page, size);
         }
-        return eventService.getEventsByFilter(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable, clientIp, endPointPath);
+        return eventService.getEventsByFilter(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable, request);
     }
 
     @GetMapping("/{id}")
     public Event getEventById(@PathVariable @Positive long id, HttpServletRequest request) {
         log.info("Получен запрос на событие {}", id);
-        log.info("client ip: {}", request.getRemoteAddr());
-        log.info("endpoint path: {}", request.getRequestURI());
-        String clientIp = request.getRemoteAddr();
-        String endPointPath = request.getRequestURI();
-        return eventService.getEvent(id, clientIp, endPointPath);
+        return eventService.getEvent(id, request);
     }
 }

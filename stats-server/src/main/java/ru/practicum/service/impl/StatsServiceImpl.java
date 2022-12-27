@@ -31,13 +31,6 @@ public class StatsServiceImpl implements StatsService {
         EndPointHit endPointHit = StatsMapper.INSTANCE.toEndpointHit(endPointHitDto);
         return statsRepository.save(endPointHit);
     }
-//    @Override
-//    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
-//        List<ViewStats> viewStatsList = statsRepository.findAll().stream()
-//                .map(StatsMapper.INSTANCE::toViews).collect(Collectors.toList());
-//
-//        return viewStatsList;
-//    }
 
     @Override
     public List<ViewStats> getStats(DtoRequestFilter filter) {

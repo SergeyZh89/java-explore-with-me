@@ -22,10 +22,9 @@ public class StatsController {
     @GetMapping("/stats")
     public List<ViewStats> getStats(@RequestParam String start,
                                     @RequestParam String end,
-                                    @RequestParam(required = false, defaultValue = "new List<String>") List<String> uris,
+                                    @RequestParam(required = false, defaultValue = "") List<String> uris,
                                     @RequestParam(required = false, defaultValue = "false") boolean unique) {
         log.info("Получен запрос просмотр статистики");
-//        return statsService.getStats(start, end, uris, unique);
         DtoRequestFilter dtoRequestFilter =
                 new DtoRequestFilter(DateTimeMapper.INSTANCE.toTime(start),
                         DateTimeMapper.INSTANCE.toTime(end), uris, unique);

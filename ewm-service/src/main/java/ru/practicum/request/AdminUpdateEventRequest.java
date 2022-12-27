@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminUpdateEventRequest {
-
     private String description;
 
     private String annotation;

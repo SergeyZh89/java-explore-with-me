@@ -10,6 +10,5 @@ import java.util.List;
 public interface StatsService {
     EndPointHit addHit(EndPointHitDto endPointHitDto);
 
-    //    List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique);
     List<ViewStats> getStats(DtoRequestFilter dtoRequestFilter);
 }

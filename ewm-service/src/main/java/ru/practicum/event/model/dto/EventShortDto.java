@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class EventShortDto {
-
     private String annotation;
 
     private CategoryDto category;

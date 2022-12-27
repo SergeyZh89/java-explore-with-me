@@ -11,10 +11,10 @@ import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServiceAdmin;
+import ru.practicum.mappers.DateTimeMapper;
 import ru.practicum.request.AdminUpdateEventRequest;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class EventServiceAdminImpl implements EventServiceAdmin {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss");
 
     @Autowired
     public EventServiceAdminImpl(EventRepository eventRepository,
@@ -37,8 +36,8 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
                 .filter(event -> usersId.contains(event.getInitiator().getId())
                         && states.contains(event.getState().name())
                         && categories.contains(event.getCategory().getId())
-                        && rangeStart != null ? event.getEventDate().isAfter(LocalDateTime.parse(rangeStart, FORMATTER)) : event.getEventDate().isAfter(LocalDateTime.now())
-                        && rangeEnd != null ? event.getEventDate().isBefore(LocalDateTime.parse(rangeEnd, FORMATTER)) : event.getEventDate().isBefore(LocalDateTime.MAX))
+                        && rangeStart != null ? event.getEventDate().isAfter(DateTimeMapper.INSTANCE.toTime(rangeStart)) : event.getEventDate().isAfter(LocalDateTime.now())
+                        && rangeEnd != null ? event.getEventDate().isBefore(DateTimeMapper.INSTANCE.toTime(rangeEnd)) : event.getEventDate().isBefore(LocalDateTime.MAX))
                 .collect(Collectors.toList());
     }
 
