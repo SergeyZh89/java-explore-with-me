@@ -4,17 +4,18 @@ import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.mappers.StatsMapper;
-import ru.practicum.model.*;
+import ru.practicum.model.DtoRequestFilter;
+import ru.practicum.model.EndPointHit;
+import ru.practicum.model.QEndPointHit;
+import ru.practicum.model.ViewStats;
 import ru.practicum.model.dto.EndPointHitDto;
 import ru.practicum.repository.StatsRepository;
 import ru.practicum.service.StatsService;
 import ru.practicum.util.QPredicates;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class StatsServiceImpl implements StatsService {
@@ -30,7 +31,6 @@ public class StatsServiceImpl implements StatsService {
         EndPointHit endPointHit = StatsMapper.INSTANCE.toEndpointHit(endPointHitDto);
         return statsRepository.save(endPointHit);
     }
-
 //    @Override
 //    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean unique) {
 //        List<ViewStats> viewStatsList = statsRepository.findAll().stream()

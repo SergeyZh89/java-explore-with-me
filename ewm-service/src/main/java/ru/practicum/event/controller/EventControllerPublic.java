@@ -12,8 +12,6 @@ import ru.practicum.event.service.EventServicePublic;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @RestController

@@ -68,9 +68,9 @@ public class EventServicePublicImpl implements EventServicePublic {
                             && event.getEventDate().isBefore(endDate))
                     .collect(Collectors.toList());
         }
-        for (Event event : eventList) {
-
-        }
+//        for (Event event : eventList) {
+//
+//        }
 
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(clientIp)
