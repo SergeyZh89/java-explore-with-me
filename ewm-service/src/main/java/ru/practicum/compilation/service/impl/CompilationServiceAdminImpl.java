@@ -3,6 +3,7 @@ package ru.practicum.compilation.service.impl;
 import org.springframework.stereotype.Service;
 import ru.practicum.compilation.exception.CompilationException;
 import ru.practicum.compilation.model.Compilation;
+import ru.practicum.compilation.model.dto.CompilationDto;
 import ru.practicum.compilation.model.dto.NewCompilationDto;
 import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.compilation.service.CompilationServiceAdmin;
@@ -26,11 +27,11 @@ public class CompilationServiceAdminImpl implements CompilationServiceAdmin {
     }
 
     @Override
-    public Compilation addCompilation(NewCompilationDto newCompilationDto) {
+    public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         List<Event> eventList = eventRepository.findAllById(newCompilationDto.getEvents());
         Compilation compilation = CompilationMapper.INSTANCE.toCompilation(newCompilationDto);
         compilation.setEvents(eventList);
-        return compilationRepository.save(compilation);
+        return CompilationMapper.INSTANCE.toCompilationDto(compilationRepository.save(compilation));
     }
 
     @Override
@@ -52,28 +53,28 @@ public class CompilationServiceAdminImpl implements CompilationServiceAdmin {
     }
 
     @Override
-    public Compilation addEventIntoCompilation(long complId, long eventId) {
+    public CompilationDto addEventIntoCompilation(long complId, long eventId) {
         Compilation compilation = compilationRepository.findById(complId)
                 .orElseThrow(() -> new CompilationException("Подборка не найдена"));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         compilation.getEvents().add(event);
-        return compilationRepository.save(compilation);
+        return CompilationMapper.INSTANCE.toCompilationDto(compilationRepository.save(compilation));
     }
 
     @Override
-    public Compilation unpinCompilationFromMainPage(long complId) {
+    public CompilationDto unpinCompilationFromMainPage(long complId) {
         Compilation compilation = compilationRepository.findById(complId)
                 .orElseThrow(() -> new CompilationException("Подборка не найдена"));
         compilation.setPinned(false);
-        return compilationRepository.save(compilation);
+        return CompilationMapper.INSTANCE.toCompilationDto(compilationRepository.save(compilation));
     }
 
     @Override
-    public Compilation pinCompilationOnMainPage(long complId) {
+    public CompilationDto pinCompilationOnMainPage(long complId) {
         Compilation compilation = compilationRepository.findById(complId)
                 .orElseThrow(() -> new CompilationException("Подборка не найдена"));
         compilation.setPinned(true);
-        return compilationRepository.save(compilation);
+        return CompilationMapper.INSTANCE.toCompilationDto(compilationRepository.save(compilation));
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.model.Compilation;
+import ru.practicum.compilation.model.dto.CompilationDto;
 import ru.practicum.compilation.service.CompilationServicePublic;
 
 import javax.validation.constraints.Positive;
@@ -23,9 +23,9 @@ public class CompilationControllerPublic {
     }
 
     @GetMapping
-    public List<Compilation> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,
-                                             @RequestParam(name = "from", defaultValue = "0", required = false) int from,
-                                             @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+    public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,
+                                                @RequestParam(name = "from", defaultValue = "0", required = false) int from,
+                                                @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
         log.info("Получен запрос на подборки событий");
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
@@ -33,7 +33,7 @@ public class CompilationControllerPublic {
     }
 
     @GetMapping("/{complId}")
-    public Compilation getCompilationsById(@PathVariable @Positive long complId) {
+    public CompilationDto getCompilationsById(@PathVariable @Positive long complId) {
         log.info("Получен запрос на подборку событий {}", complId);
         return compilationServicePublic.getCompilationById(complId);
     }

@@ -7,12 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.enums.EventSort;
-import ru.practicum.event.model.Event;
+import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.service.EventServicePublic;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -26,22 +27,22 @@ public class EventControllerPublic {
     }
 
     @GetMapping
-    public List<Event> getEventsByFilter(@RequestParam(name = "text", required = false) String text,
-                                         @RequestParam(name = "categories", required = false, defaultValue = "") List<Long> categories,
-                                         @RequestParam(name = "paid", required = false) boolean paid,
-                                         @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                         @RequestParam(name = "rangeEnf", required = false) String rangeEnd,
-                                         @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") boolean onlyAvailable,
-                                         @RequestParam(name = "sort", required = false) String sort,
-                                         @RequestParam(name = "from", required = false, defaultValue = "0") int from,
-                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                         HttpServletRequest request) {
+    public List<EventFullDto> getEventsByFilter(@RequestParam(name = "text", required = false) String text,
+                                                @RequestParam(name = "categories", required = false, defaultValue = "") List<Long> categories,
+                                                @RequestParam(name = "paid", required = false) boolean paid,
+                                                @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                                @RequestParam(name = "rangeEnf", required = false) String rangeEnd,
+                                                @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") boolean onlyAvailable,
+                                                @RequestParam(name = "sort", required = false) String sort,
+                                                @RequestParam(name = "from", required = false, defaultValue = "0") int from,
+                                                @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                HttpServletRequest request) {
         log.info("Получен запрос на получение событий по фильтру");
         int page = from / size;
+        Optional<EventSort> eventSort = EventSort.from(sort);
         Pageable pageable;
-        if (sort != null) {
-            String sortFound = EventSort.getSort(sort);
-            pageable = PageRequest.of(page, size, Sort.by(sortFound).descending());
+        if (eventSort.isPresent()) {
+            pageable = PageRequest.of(page, size, Sort.by(eventSort.get().name()).descending());
         } else {
             pageable = PageRequest.of(page, size);
         }
@@ -49,7 +50,7 @@ public class EventControllerPublic {
     }
 
     @GetMapping("/{id}")
-    public Event getEventById(@PathVariable @Positive long id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable @Positive long id, HttpServletRequest request) {
         log.info("Получен запрос на событие {}", id);
         return eventService.getEvent(id, request);
     }

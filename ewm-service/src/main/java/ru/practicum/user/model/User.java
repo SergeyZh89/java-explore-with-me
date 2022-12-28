@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 @Getter
 @Setter
@@ -22,7 +21,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Email
     @Column(name = "email", unique = true)
     private String email;
 }

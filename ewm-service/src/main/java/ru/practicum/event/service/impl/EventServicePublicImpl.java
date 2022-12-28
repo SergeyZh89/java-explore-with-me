@@ -6,9 +6,11 @@ import ru.practicum.event.controller.client.EventClient;
 import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.dto.EndPointHitDto;
+import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServicePublic;
 import ru.practicum.mappers.DateTimeMapper;
+import ru.practicum.mappers.EventMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -26,14 +28,14 @@ public class EventServicePublicImpl implements EventServicePublic {
     }
 
     @Override
-    public List<Event> getEventsByFilter(String text,
-                                         List<Long> categories,
-                                         boolean paid,
-                                         String rangeStart,
-                                         String rangeEnd,
-                                         boolean onlyAvailable,
-                                         Pageable pageable,
-                                         HttpServletRequest request) {
+    public List<EventFullDto> getEventsByFilter(String text,
+                                                List<Long> categories,
+                                                boolean paid,
+                                                String rangeStart,
+                                                String rangeEnd,
+                                                boolean onlyAvailable,
+                                                Pageable pageable,
+                                                HttpServletRequest request) {
 
         List<Event> eventList;
         LocalDateTime startDate;
@@ -76,23 +78,24 @@ public class EventServicePublicImpl implements EventServicePublic {
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
-                .app("main-service")
+                .app("ewm-main-service")
                 .build();
         eventClient.addHit(endPointHitDto);
-        return eventList;
+        return eventList.stream().map(EventMapper.INSTANCE::toFullEvent)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Event getEvent(long eventId, HttpServletRequest request) {
+    public EventFullDto getEvent(long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
-                .app(event.getTitle())
+                .app("ewm-main-service")
                 .build();
         eventClient.addHit(endPointHitDto);
         long views = event.getViews() + 1;
         event.setViews(views);
-        return event;
+        return EventMapper.INSTANCE.toFullEvent(event);
     }
 }

@@ -3,7 +3,7 @@ package ru.practicum.compilation.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilation.model.Compilation;
+import ru.practicum.compilation.model.dto.CompilationDto;
 import ru.practicum.compilation.model.dto.NewCompilationDto;
 import ru.practicum.compilation.service.CompilationServiceAdmin;
 
@@ -22,7 +22,7 @@ public class CompilationControllerAdmin {
     }
 
     @PostMapping
-    public Compilation addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
+    public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
         log.info("Получен запрос на добавление новой подборки");
         return compilationServiceAdmin.addCompilation(newCompilationDto);
     }
@@ -41,20 +41,20 @@ public class CompilationControllerAdmin {
     }
 
     @PatchMapping("/{complId}/events/{eventId}")
-    public Compilation addEventIntoCompilation(@PathVariable @Positive long complId,
-                                               @PathVariable @Positive long eventId) {
+    public CompilationDto addEventIntoCompilation(@PathVariable @Positive long complId,
+                                                  @PathVariable @Positive long eventId) {
         log.info("Получен запрос на добавление события {} в подборку {}", eventId, complId);
         return compilationServiceAdmin.addEventIntoCompilation(complId, eventId);
     }
 
     @DeleteMapping("/{complId}/pin")
-    public Compilation unpinCompilationFromMainPage(@PathVariable @Positive long complId) {
+    public CompilationDto unpinCompilationFromMainPage(@PathVariable @Positive long complId) {
         log.info("Получен запрос на открепление подборки с главной страницы");
         return compilationServiceAdmin.unpinCompilationFromMainPage(complId);
     }
 
     @PatchMapping("/{complId}/pin")
-    public Compilation pinCompilationOnMainPage(@PathVariable @Positive long complId) {
+    public CompilationDto pinCompilationOnMainPage(@PathVariable @Positive long complId) {
         log.info("Получен запрос на закрепленик подборки на главной странице");
         return compilationServiceAdmin.pinCompilationOnMainPage(complId);
     }

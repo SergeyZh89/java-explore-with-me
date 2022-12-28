@@ -26,27 +26,30 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category addCategory(NewCategoryDto newCategoryDto) {
+    public CategoryDto addCategory(NewCategoryDto newCategoryDto) {
         Optional<Category> categoryFound = categoryRepository.findByName(newCategoryDto.getName());
         if (categoryFound.isPresent()) {
             throw new ConflictException("Такая директория уже существует");
         }
         Category category = CategoryMapper.INSTANCE.toCategory(newCategoryDto);
-        return categoryRepository.save(category);
+        return CategoryMapper.INSTANCE.toCategoryDto(categoryRepository.save(category));
     }
 
     @Override
-    public List<Category> getCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).stream().collect(Collectors.toList());
+    public List<CategoryDto> getCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).stream()
+                .map(CategoryMapper.INSTANCE::toCategoryDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Category getCategory(long catId) {
-        return categoryRepository.findById(catId).orElseThrow(() -> new CategoryNotFoundException(catId));
+    public CategoryDto getCategory(long catId) {
+        return CategoryMapper.INSTANCE.toCategoryDto(categoryRepository
+                .findById(catId).orElseThrow(() -> new CategoryNotFoundException(catId)));
     }
 
     @Override
-    public Category patchCategory(CategoryDto categoryDto) {
+    public CategoryDto patchCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new CategoryNotFoundException(categoryDto.getId()));
         Optional<Category> categoryDuplicate = categoryRepository.findByName(categoryDto.getName());
@@ -57,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ConflictException("Такое имя уже существует");
         }
         category.setName(categoryDto.getName());
-        return categoryRepository.save(category);
+        return CategoryMapper.INSTANCE.toCategoryDto(categoryRepository.save(category));
     }
 
     @Override

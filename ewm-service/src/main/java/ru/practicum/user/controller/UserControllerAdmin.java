@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.user.model.User;
+import ru.practicum.user.model.dto.NewUserRequest;
 import ru.practicum.user.model.dto.UserDto;
 import ru.practicum.user.service.UserService;
 
@@ -26,9 +26,9 @@ public class UserControllerAdmin {
     }
 
     @GetMapping
-    public List<User> getUsers(@RequestParam(name = "ids") List<Long> ids,
-                               @RequestParam(required = false, name = "from", defaultValue = "0") Integer from,
-                               @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
+    public List<UserDto> getUsers(@RequestParam(name = "ids") List<Long> ids,
+                                  @RequestParam(required = false, name = "from", defaultValue = "0") Integer from,
+                                  @RequestParam(required = false, name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос на список пользователей");
         int page = from / size;
         Pageable pageable = PageRequest.of(page, size);
@@ -36,9 +36,9 @@ public class UserControllerAdmin {
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Valid UserDto userDto) {
-        log.info("Получен запрос на добавление пользователя {}", userDto.getName());
-        return userService.addUser(userDto);
+    public UserDto addUser(@RequestBody @Valid NewUserRequest userRequest) {
+        log.info("Получен запрос на добавление пользователя {}", userRequest.getName());
+        return userService.addUser(userRequest);
     }
 
     @DeleteMapping("/{userId}")

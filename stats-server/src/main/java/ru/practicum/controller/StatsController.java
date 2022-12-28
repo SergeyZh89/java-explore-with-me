@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mappers.DateTimeMapper;
 import ru.practicum.model.DtoRequestFilter;
-import ru.practicum.model.EndPointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.model.dto.EndPointHitDto;
 import ru.practicum.service.StatsService;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -32,7 +32,7 @@ public class StatsController {
     }
 
     @PostMapping("/hit")
-    public EndPointHit addHit(@RequestBody EndPointHitDto endPointHitDto) {
+    public EndPointHitDto addHit(@RequestBody EndPointHitDto endPointHitDto) {
         log.info("Получен запрос на добавление EndPoint о просмотре события");
         return statsService.addHit(endPointHitDto);
     }

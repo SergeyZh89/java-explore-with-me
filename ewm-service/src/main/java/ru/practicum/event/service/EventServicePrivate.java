@@ -1,27 +1,27 @@
 package ru.practicum.event.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.dto.EventDto;
+import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.NewEventDto;
-import ru.practicum.request.model.Request;
+import ru.practicum.event.model.dto.UpdateEventRequest;
+import ru.practicum.request.model.dto.RequestDto;
 
 import java.util.List;
 
 public interface EventServicePrivate {
-    List<Event> getEventsByCurrentUser(long userId, Pageable pageable);
+    List<EventFullDto> getEventsByCurrentUser(long userId, Pageable pageable);
 
-    Event updateEventByCurrentUser(long userId, EventDto eventDto);
+    EventFullDto updateEventByCurrentUser(long userId, UpdateEventRequest updateEventRequest);
 
-    Event addNewEvent(long userId, NewEventDto newEventDto);
+    EventFullDto addNewEvent(long userId, NewEventDto newEventDto);
 
-    Event getEventByCurrentUser(long userId, long eventId);
+    EventFullDto getEventByCurrentUser(long userId, long eventId);
 
-    Event cancelEventByCurrentUser(long userId, long eventId);
+    EventFullDto cancelEventByCurrentUser(long userId, long eventId);
 
-    List<Request> getOtherRequestsByEventAndCurrentUser(long userId, long eventId);
+    List<RequestDto> getOtherRequestsByEventAndCurrentUser(long userId, long eventId);
 
-    Request confirmRequest(long userId, long eventId, long reqId);
+    RequestDto confirmRequest(long userId, long eventId, long reqId);
 
-    Request rejectRequest(long userId, long eventId, long reqId);
+    RequestDto rejectRequest(long userId, long eventId, long reqId);
 }

@@ -13,13 +13,14 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class UserDto {
+    @NotNull
+    @Email
+    private String email;
+
     @ReadOnlyProperty
     @PositiveOrZero
     private long id;
 
     @NotNull
     private String name;
-
-    @Email
-    private String email;
 }

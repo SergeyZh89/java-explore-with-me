@@ -75,4 +75,16 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .build();
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleThrowableExceptions(final Throwable e) {
+        log.info("перехвачено исключение: " + e.getMessage());
+        return new ApiError.ApiErrorBuilder()
+                .errors(List.of(e.getClass().getName()))
+                .message(e.getLocalizedMessage())
+                .reason("Throwable exception")
+                .status(HttpStatus.BAD_REQUEST)
+                .build();
+    }
 }

@@ -12,16 +12,21 @@ import ru.practicum.exceptions.ConflictException;
 import ru.practicum.exceptions.ValidatorException;
 import ru.practicum.mappers.UserMapper;
 import ru.practicum.request.exception.RequestNotFountException;
+import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
+import ru.practicum.request.model.dto.RequestDto;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.exception.UserNotFoundException;
 import ru.practicum.user.model.User;
+import ru.practicum.user.model.dto.NewUserRequest;
 import ru.practicum.user.model.dto.UserDto;
 import ru.practicum.user.repository.UserRepository;
 import ru.practicum.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,18 +44,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(List<Long> ids, Pageable pageable) {
-        return userRepository.findAllById(ids);
+    public List<UserDto> getUsers(List<Long> ids, Pageable pageable) {
+        return userRepository.findAllById(ids).stream()
+                .map(UserMapper.INSTANCE::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User addUser(UserDto userDto) {
-        Optional<User> userFound = userRepository.findByEmail(userDto.getEmail());
+    public UserDto addUser(NewUserRequest newUserRequest) {
+        Optional<User> userFound = userRepository.findByEmail(newUserRequest.getEmail());
         if (userFound.isPresent()) {
             throw new ConflictException("Пользователь с таким email уже существует");
         }
-        User user = UserMapper.INSTANCE.toUser(userDto);
-        return userRepository.save(user);
+        User user = UserMapper.INSTANCE.toUser(newUserRequest);
+        return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
     }
 
     @Override
@@ -61,12 +68,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Request> getUserRequests(long userId) {
-        return requestRepository.findRequestsByRequester(userId);
+    public List<RequestDto> getUserRequests(long userId) {
+        return requestRepository.findRequestsByRequester(userId).stream()
+                .map(RequestMapper.INSTANCE::toRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Request addNewRequestIntoEventByUser(long eventId, long userId) {
+    public RequestDto addNewRequestIntoEventByUser(long eventId, long userId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         User user = userRepository.findById(userId)
@@ -91,14 +100,15 @@ public class UserServiceImpl implements UserService {
 
         request.setEvent(eventId);
         request.setRequester(userId);
+        request.setCreated(LocalDateTime.now());
         if (!event.isRequestModeration()) {
             request.setStatus(RequestState.PENDING);
         }
-        return requestRepository.save(request);
+        return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
     }
 
     @Override
-    public Request cancelRequestByCurrentUser(long userId, long requestId) {
+    public RequestDto cancelRequestByCurrentUser(long userId, long requestId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -107,6 +117,6 @@ public class UserServiceImpl implements UserService {
 
         request.setStatus(RequestState.CANCELED);
 
-        return requestRepository.save(request);
+        return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
     }
 }

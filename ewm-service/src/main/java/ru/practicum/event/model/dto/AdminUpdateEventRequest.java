@@ -1,10 +1,9 @@
-package ru.practicum.request;
+package ru.practicum.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.location.Location;
+import ru.practicum.location.dto.LocationDto;
 
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,11 +21,10 @@ public class AdminUpdateEventRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    private Location location;
+    private LocationDto location;
 
     private boolean paid;
 
-    @PositiveOrZero
     private int participantLimit;
 
     private boolean requestModeration;

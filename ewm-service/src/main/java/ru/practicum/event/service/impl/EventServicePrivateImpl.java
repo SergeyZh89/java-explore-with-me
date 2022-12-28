@@ -10,14 +10,17 @@ import ru.practicum.event.enums.EventState;
 import ru.practicum.event.enums.RequestState;
 import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.event.model.Event;
-import ru.practicum.event.model.dto.EventDto;
+import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.NewEventDto;
+import ru.practicum.event.model.dto.UpdateEventRequest;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServicePrivate;
 import ru.practicum.exceptions.ValidatorException;
 import ru.practicum.mappers.EventMapper;
 import ru.practicum.request.exception.RequestNotFountException;
+import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
+import ru.practicum.request.model.dto.RequestDto;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.exception.UserNotFoundException;
 import ru.practicum.user.model.User;
@@ -46,30 +49,32 @@ public class EventServicePrivateImpl implements EventServicePrivate {
     }
 
     @Override
-    public List<Event> getEventsByCurrentUser(long userId, Pageable pageable) {
-        return eventRepository.findEventsByInitiator_Id(userId, pageable);
+    public List<EventFullDto> getEventsByCurrentUser(long userId, Pageable pageable) {
+        return eventRepository.findEventsByInitiator_Id(userId, pageable).stream()
+                .map(EventMapper.INSTANCE::toFullEvent)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Event updateEventByCurrentUser(long userId, EventDto eventDto) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventDto.getEventId(), userId)
-                .orElseThrow(() -> new EventNotFoundException(eventDto.getEventId()));
-        Category category = categoryRepository.findById(eventDto.getCategory())
-                .orElseThrow(() -> new CategoryNotFoundException(eventDto.getCategory()));
-        Event eventUpdated = EventMapper.INSTANCE.partialUpdate(eventDto, event);
+    public EventFullDto updateEventByCurrentUser(long userId, UpdateEventRequest updateEventRequest) {
+        Event event = eventRepository.findEventByIdAndInitiator_Id(updateEventRequest.getEventId(), userId)
+                .orElseThrow(() -> new EventNotFoundException(updateEventRequest.getEventId()));
+        Category category = categoryRepository.findById(updateEventRequest.getCategory())
+                .orElseThrow(() -> new CategoryNotFoundException(updateEventRequest.getCategory()));
+        Event eventUpdated = EventMapper.INSTANCE.partialUpdate(updateEventRequest, event);
         eventUpdated.setCategory(category);
         if (event.getState().equals(EventState.PENDING)) {
-            return eventRepository.save(eventUpdated);
+            return EventMapper.INSTANCE.toFullEvent(eventRepository.save(eventUpdated));
         } else if (event.getState().equals(EventState.CANCELED)) {
             event.setState(EventState.PENDING);
-            return eventRepository.save(eventUpdated);
+            return EventMapper.INSTANCE.toFullEvent(eventRepository.save(eventUpdated));
         } else {
             throw new ValidatorException("Only pending or canceled events can be changed");
         }
     }
 
     @Override
-    public Event addNewEvent(long userId, NewEventDto newEventDto) {
+    public EventFullDto addNewEvent(long userId, NewEventDto newEventDto) {
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidatorException("Only pending or canceled events can be changed");
         }
@@ -80,32 +85,34 @@ public class EventServicePrivateImpl implements EventServicePrivate {
                 .orElseThrow(() -> new UserNotFoundException(userId));
         event.setCategory(category);
         event.setInitiator(user);
-        return eventRepository.save(event);
+        return EventMapper.INSTANCE.toFullEvent(eventRepository.save(event));
     }
 
     @Override
-    public Event getEventByCurrentUser(long userId, long eventId) {
-        return eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
+    public EventFullDto getEventByCurrentUser(long userId, long eventId) {
+        return EventMapper.INSTANCE.toFullEvent(eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
+                .orElseThrow(() -> new EventNotFoundException(eventId)));
     }
 
     @Override
-    public Event cancelEventByCurrentUser(long userId, long eventId) {
+    public EventFullDto cancelEventByCurrentUser(long userId, long eventId) {
         Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         event.setState(EventState.CANCELED);
-        return eventRepository.save(event);
+        return EventMapper.INSTANCE.toFullEvent(eventRepository.save(event));
     }
 
     @Override
-    public List<Request> getOtherRequestsByEventAndCurrentUser(long userId, long eventId) {
+    public List<RequestDto> getOtherRequestsByEventAndCurrentUser(long userId, long eventId) {
         Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
-        return requestRepository.findRequestsByEvent(eventId);
+        return requestRepository.findRequestsByEvent(eventId).stream()
+                .map(RequestMapper.INSTANCE::toRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Request confirmRequest(long userId, long eventId, long reqId) {
+    public RequestDto confirmRequest(long userId, long eventId, long reqId) {
         Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
         if (event.getConfirmedRequests() == event.getParticipantLimit()) {
@@ -125,16 +132,16 @@ public class EventServicePrivateImpl implements EventServicePrivate {
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new RequestNotFountException(reqId));
         request.setStatus(RequestState.CONFIRMED);
-        return requestRepository.save(request);
+        return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
     }
 
     @Override
-    public Request rejectRequest(long userId, long eventId, long reqId) {
+    public RequestDto rejectRequest(long userId, long eventId, long reqId) {
         Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new RequestNotFountException(reqId));
         request.setStatus(RequestState.REJECTED);
-        return requestRepository.save(request);
+        return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
     }
 }

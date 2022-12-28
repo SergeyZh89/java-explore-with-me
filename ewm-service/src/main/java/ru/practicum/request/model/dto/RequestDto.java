@@ -1,32 +1,31 @@
-package ru.practicum.request.model;
+package ru.practicum.request.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.event.enums.RequestState;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "requests")
 @Builder(toBuilder = true)
-public class Request {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class RequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Builder.Default
     private LocalDateTime created = LocalDateTime.now();
 
-    @Column(name = "event_id")
+    @Positive
     private long event;
 
-    @Column(name = "requester_id")
+    @Positive
+    private long id;
+
+    @Positive
     private long requester;
 
     @Enumerated(value = EnumType.STRING)
