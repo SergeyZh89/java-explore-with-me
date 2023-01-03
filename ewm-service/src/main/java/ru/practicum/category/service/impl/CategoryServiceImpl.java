@@ -54,10 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException(categoryDto.getId()));
         Optional<Category> categoryDuplicate = categoryRepository.findByName(categoryDto.getName());
         if (categoryDuplicate.isPresent()) {
-            throw new ConflictException("Такая директория уже существует");
-        }
-        if (category.getName().equals(categoryDto.getName())) {
-            throw new ConflictException("Такое имя уже существует");
+            throw new ConflictException("Такая категория уже существует");
         }
         category.setName(categoryDto.getName());
         return CategoryMapper.INSTANCE.toCategoryDto(categoryRepository.save(category));

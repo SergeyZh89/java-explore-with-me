@@ -42,7 +42,7 @@ public class StatsServiceImpl implements StatsService {
                 .add(filter.getUris(), endPointHit.uri::in)
                 .buildAnd();
 
-        List<ViewStats> test = StreamSupport.stream(statsRepository.findAll(predicate).spliterator(), false)
+        List<ViewStats> viewStatsList = StreamSupport.stream(statsRepository.findAll(predicate).spliterator(), false)
                 .map(endPoint -> {
                     ViewStats viewStats = ViewStatsMapper.INSTANCE.toViewStats(endPoint);
                     viewStats.setHits(statsRepository.countByApp(endPoint.getApp()));
@@ -51,9 +51,9 @@ public class StatsServiceImpl implements StatsService {
                 .collect(Collectors.toList());
 
         if (filter.isUnique()) {
-            return test.stream().distinct()
+            return viewStatsList.stream().distinct()
                     .collect(Collectors.toList());
         }
-        return test;
+        return viewStatsList;
     }
 }
