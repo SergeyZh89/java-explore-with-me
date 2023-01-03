@@ -19,13 +19,13 @@ public class EndPointHit {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "app")
+    @Column(name = "app", nullable = false, length = 255)
     private String app;
 
-    @Column(name = "uri")
+    @Column(name = "uri", nullable = false, length = 255)
     private String uri;
 
-    @Column(name = "ip")
+    @Column(name = "ip", nullable = false, length = 255)
     private String ip;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
