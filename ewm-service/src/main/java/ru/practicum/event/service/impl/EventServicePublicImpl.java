@@ -57,7 +57,7 @@ public class EventServicePublicImpl implements EventServicePublic {
         } else {
             endDate = DateTimeMapper.INSTANCE.toTime(rangeEnd);
         }
-        
+
         eventList = eventRepository.findAll().stream()
                 .filter(event -> categories.contains(event.getCategory().getId())
                         && event.getAnnotation().equalsIgnoreCase(text)
