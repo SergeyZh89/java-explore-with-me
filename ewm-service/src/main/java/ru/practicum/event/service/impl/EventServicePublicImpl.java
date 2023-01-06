@@ -58,13 +58,28 @@ public class EventServicePublicImpl implements EventServicePublic {
             endDate = DateTimeMapper.INSTANCE.toTime(rangeEnd);
         }
 
-        eventList = eventRepository.findAll().stream()
-                .filter(event -> categories.contains(event.getCategory().getId())
-                        && event.getAnnotation().equalsIgnoreCase(text)
-                        && event.isPaid() == paid
-                        && onlyAvailable ? event.getConfirmedRequests() < event.getParticipantLimit() : event.getEventDate().isAfter(startDate)
-                        && event.getEventDate().isBefore(endDate))
-                .collect(Collectors.toList());
+        if (onlyAvailable) {
+            eventList = eventRepository.findAll().stream()
+                    .filter(event -> categories.contains(event.getCategory().getId())
+                            && event.getAnnotation().equalsIgnoreCase(text)
+                            && event.isPaid() == paid
+                            && event.getConfirmedRequests() < event.getParticipantLimit()
+                            && event.getEventDate().isAfter(startDate)
+                            && event.getEventDate().isBefore(endDate))
+                    .collect(Collectors.toList());
+        } else {
+            eventList = eventRepository.findAll().stream()
+                    .filter(event -> categories.contains(event.getCategory().getId())
+                            && event.getAnnotation().equalsIgnoreCase(text)
+                            && event.isPaid() == paid
+                            && event.getEventDate().isAfter(startDate)
+                            && event.getEventDate().isBefore(endDate))
+                    .collect(Collectors.toList());
+        }
+        for (Event event : eventList) {
+            long views = event.getViews() + 1;
+            event.setViews(views);
+        }
 
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(request.getRemoteAddr())
