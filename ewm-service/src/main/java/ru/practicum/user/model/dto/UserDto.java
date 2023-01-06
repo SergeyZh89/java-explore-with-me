@@ -6,6 +6,7 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,4 +24,10 @@ public class UserDto {
 
     @NotNull
     private String name;
+
+    @NotNull
+    private LocalDateTime dateBan;
+
+    @NotNull
+    private boolean isBanned;
 }

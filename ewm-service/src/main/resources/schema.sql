@@ -10,9 +10,11 @@ DROP table if exists users,
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id    bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    name  VARCHAR(255)                        NOT NULL,
-    email VARCHAR(255)                        NOT NULL,
+    id        bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+    name      VARCHAR(255)                        NOT NULL,
+    email     VARCHAR(255)                        NOT NULL,
+    date_ban  timestamp without time zone,
+    is_banned boolean                             NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (id),
     CONSTRAINT QK_USER_EMAIL unique (email)
 );

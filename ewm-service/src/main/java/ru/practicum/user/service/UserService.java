@@ -19,4 +19,6 @@ public interface UserService {
     RequestDto addNewRequestIntoEventByUser(long eventId, long userId);
 
     RequestDto cancelRequestByCurrentUser(long userId, long requestId);
+
+    UserDto setStatusUser(long userId, long minutes, String isBanned);
 }

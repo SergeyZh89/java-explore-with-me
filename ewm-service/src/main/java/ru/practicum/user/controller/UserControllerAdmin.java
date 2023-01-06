@@ -11,6 +11,8 @@ import ru.practicum.user.model.dto.UserDto;
 import ru.practicum.user.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -45,5 +47,14 @@ public class UserControllerAdmin {
     public void deleteUser(@PathVariable Long userId) {
         log.info("Получен запрос на удаление пользователя {}", userId);
         userService.deleteUser(userId);
+    }
+
+    @PatchMapping("/{userId}")
+    public UserDto setStatusUser(@PathVariable @Positive long userId,
+                                 @RequestParam(name = "minutes", required = false, defaultValue = "0")
+                                 @PositiveOrZero long minutes,
+                                 @RequestParam(name = "ban") String isBanned) {
+        log.info("Получен запрос на бан/разбан пользователя");
+        return userService.setStatusUser(userId, minutes, isBanned);
     }
 }

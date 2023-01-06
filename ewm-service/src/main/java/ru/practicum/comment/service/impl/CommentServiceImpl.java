@@ -41,6 +41,13 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto addNewComment(long userId, long eventId, NewCommentDto newCommentDto) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        if (user.isBanned() && user.getDateBan().isAfter(LocalDateTime.now())) {
+            throw new ValidatorException(String.format("Пользователь забанен до %s и не может оставлять сообщения",
+                    user.getDateBan().toString()));
+        } else {
+            user.setBanned(false);
+            user.setDateBan(LocalDateTime.of(1000, 1, 1, 0, 0, 0));
+        }
         Comment comment = new Comment().toBuilder()
                 .author(user)
                 .event(event)

@@ -57,30 +57,7 @@ public class EventServicePublicImpl implements EventServicePublic {
         } else {
             endDate = DateTimeMapper.INSTANCE.toTime(rangeEnd);
         }
-
-//        if (onlyAvailable) {
-//            eventList = eventRepository.findAll().stream()
-//                    .filter(event -> categories.contains(event.getCategory().getId())
-//                            && event.getAnnotation().equalsIgnoreCase(text)
-//                            && event.isPaid() == paid
-//                            && event.getConfirmedRequests() < event.getParticipantLimit()
-//                            && event.getEventDate().isAfter(startDate)
-//                            && event.getEventDate().isBefore(endDate))
-//                    .collect(Collectors.toList());
-//        } else {
-//            eventList = eventRepository.findAll().stream()
-//                    .filter(event -> categories.contains(event.getCategory().getId())
-//                            && event.getAnnotation().equalsIgnoreCase(text)
-//                            && event.isPaid() == paid
-//                            && event.getEventDate().isAfter(startDate)
-//                            && event.getEventDate().isBefore(endDate))
-//                    .collect(Collectors.toList());
-//        }
-//        for (Event event : eventList) {
-//            long views = event.getViews() + 1;
-//            event.setViews(views);
-//        }
-
+        
         eventList = eventRepository.findAll().stream()
                 .filter(event -> categories.contains(event.getCategory().getId())
                         && event.getAnnotation().equalsIgnoreCase(text)
