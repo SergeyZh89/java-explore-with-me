@@ -2,6 +2,8 @@ package ru.practicum.event.service.impl;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.comment.model.dto.CommentDto;
+import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.event.controller.client.EventClient;
 import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.event.model.Event;
@@ -9,6 +11,7 @@ import ru.practicum.event.model.dto.EndPointHitDto;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServicePublic;
+import ru.practicum.mappers.CommentMapper;
 import ru.practicum.mappers.DateTimeMapper;
 import ru.practicum.mappers.EventMapper;
 
@@ -21,10 +24,13 @@ import java.util.stream.Collectors;
 public class EventServicePublicImpl implements EventServicePublic {
     private final EventRepository eventRepository;
     private final EventClient eventClient;
+    private final CommentRepository commentRepository;
 
-    public EventServicePublicImpl(EventRepository eventRepository, EventClient eventClient) {
+    public EventServicePublicImpl(EventRepository eventRepository, EventClient eventClient,
+                                  CommentRepository commentRepository) {
         this.eventRepository = eventRepository;
         this.eventClient = eventClient;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -52,28 +58,36 @@ public class EventServicePublicImpl implements EventServicePublic {
             endDate = DateTimeMapper.INSTANCE.toTime(rangeEnd);
         }
 
-        if (onlyAvailable) {
-            eventList = eventRepository.findAll().stream()
-                    .filter(event -> categories.contains(event.getCategory().getId())
-                            && event.getAnnotation().equalsIgnoreCase(text)
-                            && event.isPaid() == paid
-                            && event.getConfirmedRequests() < event.getParticipantLimit()
-                            && event.getEventDate().isAfter(startDate)
-                            && event.getEventDate().isBefore(endDate))
-                    .collect(Collectors.toList());
-        } else {
-            eventList = eventRepository.findAll().stream()
-                    .filter(event -> categories.contains(event.getCategory().getId())
-                            && event.getAnnotation().equalsIgnoreCase(text)
-                            && event.isPaid() == paid
-                            && event.getEventDate().isAfter(startDate)
-                            && event.getEventDate().isBefore(endDate))
-                    .collect(Collectors.toList());
-        }
-        for (Event event : eventList) {
-            long views = event.getViews() + 1;
-            event.setViews(views);
-        }
+//        if (onlyAvailable) {
+//            eventList = eventRepository.findAll().stream()
+//                    .filter(event -> categories.contains(event.getCategory().getId())
+//                            && event.getAnnotation().equalsIgnoreCase(text)
+//                            && event.isPaid() == paid
+//                            && event.getConfirmedRequests() < event.getParticipantLimit()
+//                            && event.getEventDate().isAfter(startDate)
+//                            && event.getEventDate().isBefore(endDate))
+//                    .collect(Collectors.toList());
+//        } else {
+//            eventList = eventRepository.findAll().stream()
+//                    .filter(event -> categories.contains(event.getCategory().getId())
+//                            && event.getAnnotation().equalsIgnoreCase(text)
+//                            && event.isPaid() == paid
+//                            && event.getEventDate().isAfter(startDate)
+//                            && event.getEventDate().isBefore(endDate))
+//                    .collect(Collectors.toList());
+//        }
+//        for (Event event : eventList) {
+//            long views = event.getViews() + 1;
+//            event.setViews(views);
+//        }
+
+        eventList = eventRepository.findAll().stream()
+                .filter(event -> categories.contains(event.getCategory().getId())
+                        && event.getAnnotation().equalsIgnoreCase(text)
+                        && event.isPaid() == paid
+                        && onlyAvailable ? event.getConfirmedRequests() < event.getParticipantLimit() : event.getEventDate().isAfter(startDate)
+                        && event.getEventDate().isBefore(endDate))
+                .collect(Collectors.toList());
 
         EndPointHitDto endPointHitDto = new EndPointHitDto().toBuilder()
                 .ip(request.getRemoteAddr())
@@ -96,6 +110,11 @@ public class EventServicePublicImpl implements EventServicePublic {
         eventClient.addHit(endPointHitDto);
         long views = event.getViews() + 1;
         event.setViews(views);
-        return EventMapper.INSTANCE.toFullEvent(event);
+        List<CommentDto> commentList = commentRepository.findAll().stream()
+                .map(CommentMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
+        EventFullDto eventFullDto = EventMapper.INSTANCE.toFullEvent(event);
+        eventFullDto.setComments(commentList);
+        return eventFullDto;
     }
 }

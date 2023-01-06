@@ -1,4 +1,13 @@
-DROP table if exists users, categories, events, compilations_events, locations, compilations, requests;
+DROP table if exists users,
+    categories,
+    events,
+    compilations_events,
+    locations,
+    compilations,
+    requests,
+    comments,
+    events_comments;
+
 CREATE TABLE IF NOT EXISTS users
 (
     id    bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -23,6 +32,8 @@ CREATE TABLE IF NOT EXISTS categories
     CONSTRAINT pk_category PRIMARY KEY (id)
 );
 
+
+
 CREATE TABLE IF NOT EXISTS events
 (
     id                 BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -45,6 +56,17 @@ CREATE TABLE IF NOT EXISTS events
     CONSTRAINT fk_event_location foreign key (location_id) references locations (id),
     CONSTRAINT fk_event_category foreign key (category_id) references categories (id),
     CONSTRAINT fk_event_user foreign key (initiator_id) references users (id)
+);
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id          bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+    event_id    bigint references events (id),
+    author_id   bigint references users (id),
+    author_name varchar(255),
+    text        varchar(3000),
+    created     timestamp without time zone,
+    CONSTRAINT pk_comments primary key (id)
 );
 
 CREATE TABLE IF NOT EXISTS compilations

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import ru.practicum.category.exception.CategoryNotFoundException;
+import ru.practicum.comment.exception.CommentNotFoundException;
 import ru.practicum.event.exception.EventNotFoundException;
 import ru.practicum.user.exception.UserNotFoundException;
 
@@ -19,6 +20,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleUserNotFoundException(final EventNotFoundException e) {
+        log.info("перехвачено исключение: " + e.getMessage());
+        return new ApiError.ApiErrorBuilder()
+                .errors(List.of(e.getClass().getName()))
+                .message(e.getLocalizedMessage())
+                .reason("The required object was not found.")
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleCommentNotFoundException(final CommentNotFoundException e) {
         log.info("перехвачено исключение: " + e.getMessage());
         return new ApiError.ApiErrorBuilder()
                 .errors(List.of(e.getClass().getName()))

@@ -23,7 +23,7 @@ public class Event {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "annotation")
+    @Column(name = "annotation", length = 2000)
     private String annotation;
 
     @ManyToOne
@@ -38,7 +38,7 @@ public class Event {
     @Builder.Default
     private LocalDateTime createdOn = LocalDateTime.now();
 
-    @Column(name = "description")
+    @Column(name = "description", length = 7000)
     private String description;
 
     @Column(name = "event_date")
