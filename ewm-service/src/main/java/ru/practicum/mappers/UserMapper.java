@@ -17,7 +17,7 @@ public interface UserMapper {
                 .name(user.getName())
                 .id(user.getId())
                 .isBanned(user.isBanned())
-                .date_ban(user.getDate_ban())
+                .dateBan(user.getDateBan())
                 .email(user.getEmail())
                 .build();
     }
