@@ -26,7 +26,7 @@ public class UserDto {
     private String name;
 
     @NotNull
-    private LocalDateTime dateBan;
+    private LocalDateTime date_ban;
 
     @NotNull
     private boolean isBanned;
