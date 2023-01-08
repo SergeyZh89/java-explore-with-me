@@ -26,10 +26,10 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "dateBan")
+    @Column(name = "date_ban")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss")
     @Builder.Default
-    private LocalDateTime dateBan = LocalDateTime.of(1000, 1, 1, 0, 0, 0);
+    private LocalDateTime date_ban = LocalDateTime.of(1000, 1, 1, 0, 0, 0);
 
     @Column(name = "is_banned")
     private boolean isBanned = false;

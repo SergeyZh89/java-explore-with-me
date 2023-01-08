@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS events
 CREATE TABLE IF NOT EXISTS comments
 (
     id          bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    event_id    bigint references events (id),
-    author_id   bigint references users (id),
-    author_name varchar(255),
-    text        varchar(3000),
-    created     timestamp without time zone,
-    CONSTRAINT pk_comments primary key (id)
+    event_id    bigint references events (id)       NOT NULL,
+    author_id   bigint references users (id)        NOT NULL,
+    author_name varchar(255)                        NOT NULL,
+    text        varchar(3000)                       NOT NULL,
+    created     timestamp without time zone         NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS compilations

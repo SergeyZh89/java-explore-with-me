@@ -18,10 +18,12 @@ import ru.practicum.user.exception.UserNotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;

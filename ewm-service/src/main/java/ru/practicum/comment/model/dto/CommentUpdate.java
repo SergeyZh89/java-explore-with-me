@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class CommentUpdate {
-    private long id;
+    private Long id;
     @NotNull
     private String text;
 }
