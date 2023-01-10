@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.category.model.dto.CategoryDto;
+import ru.practicum.comment.model.dto.CommentDto;
 import ru.practicum.event.enums.EventState;
 import ru.practicum.location.dto.LocationDto;
 import ru.practicum.user.model.dto.UserShortDto;
@@ -13,6 +14,8 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -67,4 +70,6 @@ public class EventFullDto {
 
     @NotNull
     private long views;
+
+    private List<CommentDto> comments = new ArrayList<>();
 }

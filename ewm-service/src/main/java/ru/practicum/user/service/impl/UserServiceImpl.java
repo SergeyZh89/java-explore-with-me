@@ -119,4 +119,23 @@ public class UserServiceImpl implements UserService {
 
         return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
     }
+
+    @Override
+    public UserDto setStatusUser(long userId, long minutes, String isBanned) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        if (minutes == 0 && isBanned.equals("false")) {
+            user.setDateBan(LocalDateTime.of(1000, 1, 1, 0, 0, 0));
+            user.setBanned(false);
+        } else if (minutes > 0 && isBanned.equals("true")) {
+            user.setDateBan(LocalDateTime.now().plusMinutes(minutes));
+            user.setBanned(true);
+        } else if (minutes == 0 && isBanned.equals("true")) {
+            user.setDateBan(LocalDateTime.of(3000, 1, 1, 0, 0, 0));
+            user.setBanned(true);
+        } else {
+            throw new ValidatorException("Неверный запрос");
+        }
+        return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
+    }
 }

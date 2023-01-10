@@ -12,5 +12,13 @@ public interface UserMapper {
 
     User toUser(NewUserRequest newUserRequest);
 
-    UserDto toUserDto(User user);
+    default UserDto toUserDto(User user) {
+        return new UserDto().toBuilder()
+                .name(user.getName())
+                .id(user.getId())
+                .isBanned(user.isBanned())
+                .dateBan(user.getDateBan())
+                .email(user.getEmail())
+                .build();
+    }
 }

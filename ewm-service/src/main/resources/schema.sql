@@ -1,9 +1,20 @@
-DROP table if exists users, categories, events, compilations_events, locations, compilations, requests;
+DROP table if exists users,
+    categories,
+    events,
+    compilations_events,
+    locations,
+    compilations,
+    requests,
+    comments,
+    events_comments;
+
 CREATE TABLE IF NOT EXISTS users
 (
-    id    bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-    name  VARCHAR(255)                        NOT NULL,
-    email VARCHAR(255)                        NOT NULL,
+    id        bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+    name      VARCHAR(255)                        NOT NULL,
+    email     VARCHAR(255)                        NOT NULL,
+    date_ban  timestamp without time zone,
+    is_banned boolean                             NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (id),
     CONSTRAINT QK_USER_EMAIL unique (email)
 );
@@ -22,6 +33,8 @@ CREATE TABLE IF NOT EXISTS categories
     name VARCHAR(255)                        NOT NULL,
     CONSTRAINT pk_category PRIMARY KEY (id)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS events
 (
@@ -45,6 +58,17 @@ CREATE TABLE IF NOT EXISTS events
     CONSTRAINT fk_event_location foreign key (location_id) references locations (id),
     CONSTRAINT fk_event_category foreign key (category_id) references categories (id),
     CONSTRAINT fk_event_user foreign key (initiator_id) references users (id)
+);
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id          bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+    event_id    bigint references events (id)       NOT NULL,
+    author_id   bigint references users (id)        NOT NULL,
+    author_name varchar(255)                        NOT NULL,
+    text        varchar(3000)                       NOT NULL,
+    created     timestamp without time zone         NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS compilations
