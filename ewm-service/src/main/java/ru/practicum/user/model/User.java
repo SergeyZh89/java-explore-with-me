@@ -2,6 +2,7 @@ package ru.practicum.user.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
@@ -14,23 +15,24 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "users")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ReadOnlyProperty
-    private long id;
+    Long id;
 
     @Column(name = "name")
-    private String name;
+    String name;
 
     @Column(name = "email", unique = true)
-    private String email;
+    String email;
 
     @Column(name = "date_ban")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss")
     @Builder.Default
-    private LocalDateTime dateBan = LocalDateTime.of(1000, 1, 1, 0, 0, 0);
+    LocalDateTime dateBan = LocalDateTime.of(1000, 1, 1, 0, 0, 0);
 
     @Column(name = "is_banned")
-    private boolean isBanned = false;
+    boolean isBanned = false;
 }

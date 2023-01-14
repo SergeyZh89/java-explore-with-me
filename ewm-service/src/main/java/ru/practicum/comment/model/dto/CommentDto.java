@@ -1,6 +1,7 @@
 package ru.practicum.comment.model.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -8,10 +9,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
 public class CommentDto {
-    private String authorName;
-    private String text;
+    String authorName;
+    String text;
     @Builder.Default
-    private LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 }

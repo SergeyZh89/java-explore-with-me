@@ -2,6 +2,7 @@ package ru.practicum.request.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.event.enums.RequestState;
 
 import javax.persistence.EnumType;
@@ -14,21 +15,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Builder.Default
-    private LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 
     @Positive
-    private long event;
+    long event;
 
     @Positive
-    private long id;
+    long id;
 
     @Positive
-    private long requester;
+    long requester;
 
     @Enumerated(value = EnumType.STRING)
     @Builder.Default
-    private RequestState status = RequestState.PENDING;
+    RequestState status = RequestState.PENDING;
 }

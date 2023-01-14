@@ -2,6 +2,7 @@ package ru.practicum.event.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.enums.EventState;
 import ru.practicum.location.Location;
@@ -17,64 +18,65 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "events")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    Long id;
 
     @Column(name = "annotation", length = 2000)
-    private String annotation;
+    String annotation;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
+    Category category;
 
     @Column(name = "confirmed_requests")
-    private long confirmedRequests;
+    long confirmedRequests;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_on")
     @Builder.Default
-    private LocalDateTime createdOn = LocalDateTime.now();
+    LocalDateTime createdOn = LocalDateTime.now();
 
     @Column(name = "description", length = 7000)
-    private String description;
+    String description;
 
     @Column(name = "event_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
     @ManyToOne
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
-    private User initiator;
+    User initiator;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location location;
+    Location location;
 
     @Column(name = "paid")
-    private boolean paid;
+    boolean paid;
 
     @Builder.Default
     @Column(name = "participant_limit")
-    private int participantLimit = 0;
+    int participantLimit = 0;
 
     @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedOn = LocalDateTime.now();
+    LocalDateTime publishedOn = LocalDateTime.now();
 
     @Builder.Default
     @Column(name = "request_moderation")
-    private boolean requestModeration = true;
+    boolean requestModeration = true;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EventState state = EventState.PENDING;
+    EventState state = EventState.PENDING;
 
     @Column(name = "title")
-    private String title;
+    String title;
 
     @Column(name = "views")
-    private long views;
+    long views;
 }

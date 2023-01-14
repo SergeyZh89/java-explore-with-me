@@ -1,6 +1,7 @@
 package ru.practicum.user.model.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -10,11 +11,12 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserShortDto {
     @NotNull
     @Positive
-    private long id;
+    long id;
 
     @NotNull
-    private String name;
+    String name;
 }

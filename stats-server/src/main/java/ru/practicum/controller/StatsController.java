@@ -1,6 +1,8 @@
 package ru.practicum.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mappers.DateTimeMapper;
@@ -15,8 +17,9 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class StatsController {
-    private final StatsService statsService;
+    StatsService statsService;
 
     @GetMapping("/stats")
     public List<ViewStats> getStats(@RequestParam String start,

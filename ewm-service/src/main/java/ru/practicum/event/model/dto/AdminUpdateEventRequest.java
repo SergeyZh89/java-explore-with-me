@@ -2,6 +2,7 @@ package ru.practicum.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.location.dto.LocationDto;
 
 import java.time.LocalDateTime;
@@ -11,23 +12,24 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminUpdateEventRequest {
-    private String description;
+    String description;
 
-    private String annotation;
+    String annotation;
 
-    private long category;
+    Long category;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
-    private LocationDto location;
+    LocationDto location;
 
-    private boolean paid;
+    boolean paid;
 
-    private int participantLimit;
+    int participantLimit;
 
-    private boolean requestModeration;
+    boolean requestModeration;
 
-    private String title;
+    String title;
 }

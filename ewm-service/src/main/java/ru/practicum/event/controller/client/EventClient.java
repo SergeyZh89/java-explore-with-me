@@ -10,10 +10,12 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.client.HttpClient;
 import ru.practicum.event.model.dto.EndPointHitDto;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class EventClient extends HttpClient {
 
     @Autowired

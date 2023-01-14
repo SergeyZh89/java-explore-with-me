@@ -1,7 +1,9 @@
 package ru.practicum.user.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -18,14 +20,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/users")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class UserControllerAdmin {
-    private final UserService userService;
-
-    @Autowired
-    public UserControllerAdmin(UserService userService) {
-        this.userService = userService;
-    }
+    UserService userService;
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(name = "ids") List<Long> ids,

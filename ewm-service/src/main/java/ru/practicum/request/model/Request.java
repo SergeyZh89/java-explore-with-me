@@ -2,6 +2,7 @@ package ru.practicum.request.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.event.enums.RequestState;
 
 import javax.persistence.*;
@@ -14,22 +15,23 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "requests")
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    Long id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Builder.Default
-    private LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 
     @Column(name = "event_id")
-    private long event;
+    long event;
 
     @Column(name = "requester_id")
-    private long requester;
+    long requester;
 
     @Enumerated(value = EnumType.STRING)
     @Builder.Default
-    private RequestState status = RequestState.PENDING;
+    RequestState status = RequestState.PENDING;
 }

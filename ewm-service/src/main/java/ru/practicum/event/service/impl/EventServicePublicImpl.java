@@ -1,5 +1,8 @@
 package ru.practicum.event.service.impl;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.comment.model.dto.CommentDto;
@@ -16,22 +19,19 @@ import ru.practicum.mappers.DateTimeMapper;
 import ru.practicum.mappers.EventMapper;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EventServicePublicImpl implements EventServicePublic {
-    private final EventRepository eventRepository;
-    private final EventClient eventClient;
-    private final CommentRepository commentRepository;
-
-    public EventServicePublicImpl(EventRepository eventRepository, EventClient eventClient,
-                                  CommentRepository commentRepository) {
-        this.eventRepository = eventRepository;
-        this.eventClient = eventClient;
-        this.commentRepository = commentRepository;
-    }
+    EventRepository eventRepository;
+    EventClient eventClient;
+    CommentRepository commentRepository;
 
     @Override
     public List<EventFullDto> getEventsByFilter(String text,

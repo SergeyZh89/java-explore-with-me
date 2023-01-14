@@ -2,6 +2,7 @@ package ru.practicum.comment.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 
@@ -13,26 +14,27 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "comments")
 @Builder(toBuilder = true)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "author_name")
-    private String authorName;
+    String authorName;
 
     @Column(name = "text")
-    private String text;
+    String text;
 
     @ManyToOne
-    private Event event;
+    Event event;
 
     @ManyToOne
-    private User author;
+    User author;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss")
     @Column(name = "created")
-    private LocalDateTime created;
+    LocalDateTime created;
 }

@@ -1,10 +1,8 @@
 package ru.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -13,18 +11,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DtoRequestFilter {
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
-    private LocalDateTime start;
+    LocalDateTime start;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
-    private LocalDateTime end;
+    LocalDateTime end;
 
-    private List<String> uris;
+    List<String> uris;
 
     @Builder.Default
-    private boolean unique = false;
+    boolean unique = false;
 }

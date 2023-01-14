@@ -1,6 +1,8 @@
 package ru.practicum.comment.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.practicum.comment.exception.CommentNotFoundException;
 import ru.practicum.comment.model.Comment;
@@ -23,26 +25,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CommentServiceImpl implements CommentService {
-    private final CommentRepository commentRepository;
-    private final EventRepository eventRepository;
-    private final UserRepository userRepository;
-
-    @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository,
-                              EventRepository eventRepository,
-                              UserRepository userRepository) {
-        this.commentRepository = commentRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-    }
+    CommentRepository commentRepository;
+    EventRepository eventRepository;
+    UserRepository userRepository;
 
     @Override
     public CommentDto addNewComment(long userId, long eventId, NewCommentDto newCommentDto) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         if (user.isBanned() && user.getDateBan().isAfter(LocalDateTime.now())) {
             throw new ValidatorException(String.format("Пользователь забанен до %s и не может оставлять сообщения",
                     user.getDateBan().toString()));
@@ -62,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(long userId, long eventId, long commId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        checkUserOrThrowUserNotFound(userId);
+        checkEventOrThrowEventNotFound(eventId);
         Comment commentFound = commentRepository
                 .findById(commId)
                 .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
@@ -78,8 +73,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto updateComment(long userId, long eventId, CommentUpdate commentUpdate) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        checkUserOrThrowUserNotFound(userId);
+        checkEventOrThrowEventNotFound(eventId);
         Comment commentFound = commentRepository
                 .findById(commentUpdate.getId())
                 .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
@@ -102,9 +97,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteUserComment(long userId, long commId) {
-        Comment commentFound = commentRepository
-                .findById(commId)
-                .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
+        if (!commentRepository.existsById(commId)) {
+           throw new CommentNotFoundException("Комментарий не найден");
+        }
         commentRepository.deleteById(commId);
     }
 
@@ -113,5 +108,17 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAllByTextContainingIgnoreCase(text).stream()
                 .map(CommentMapper.INSTANCE::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private void checkUserOrThrowUserNotFound(long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+    }
+
+    private void checkEventOrThrowEventNotFound(long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new EventNotFoundException(eventId);
+        }
     }
 }

@@ -1,7 +1,9 @@
 package ru.practicum.comment.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comment.model.dto.CommentDto;
@@ -13,14 +15,11 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/admin/comments")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class CommentControllerAdmin {
-    private final CommentService commentService;
-
-    @Autowired
-    public CommentControllerAdmin(CommentService commentService) {
-        this.commentService = commentService;
-    }
+    CommentService commentService;
 
     @GetMapping("/{userId}")
     public List<CommentDto> getAllCommentsByUserId(@PathVariable @Positive long userId) {

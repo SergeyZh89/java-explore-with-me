@@ -1,6 +1,8 @@
 package ru.practicum.user.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.enums.EventState;
@@ -10,9 +12,9 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exceptions.ConflictException;
 import ru.practicum.exceptions.ValidatorException;
+import ru.practicum.mappers.RequestMapper;
 import ru.practicum.mappers.UserMapper;
 import ru.practicum.request.exception.RequestNotFountException;
-import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.model.dto.RequestDto;
 import ru.practicum.request.repository.RequestRepository;
@@ -23,25 +25,20 @@ import ru.practicum.user.model.dto.UserDto;
 import ru.practicum.user.repository.UserRepository;
 import ru.practicum.user.service.UserService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final RequestRepository requestRepository;
-    private final EventRepository eventRepository;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           RequestRepository requestRepository,
-                           EventRepository eventRepository) {
-        this.userRepository = userRepository;
-        this.requestRepository = requestRepository;
-        this.eventRepository = eventRepository;
-    }
+    UserRepository userRepository;
+    RequestRepository requestRepository;
+    EventRepository eventRepository;
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, Pageable pageable) {
@@ -62,8 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        checkUserOrThrowUserNotFound(userId);
         userRepository.deleteById(userId);
     }
 
@@ -78,8 +74,7 @@ public class UserServiceImpl implements UserService {
     public RequestDto addNewRequestIntoEventByUser(long eventId, long userId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        checkUserOrThrowUserNotFound(userId);
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new ValidatorException("Событие не опубликовано");
@@ -109,8 +104,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RequestDto cancelRequestByCurrentUser(long userId, long requestId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        checkUserOrThrowUserNotFound(userId);
 
         Request request = requestRepository.findRequestByRequester(userId)
                 .orElseThrow(() -> new RequestNotFountException(requestId));
@@ -137,5 +131,11 @@ public class UserServiceImpl implements UserService {
             throw new ValidatorException("Неверный запрос");
         }
         return UserMapper.INSTANCE.toUserDto(userRepository.save(user));
+    }
+
+    private void checkUserOrThrowUserNotFound(long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
     }
 }
