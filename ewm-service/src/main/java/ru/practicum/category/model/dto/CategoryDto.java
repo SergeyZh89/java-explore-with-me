@@ -10,6 +10,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryDto {
     @NotNull
