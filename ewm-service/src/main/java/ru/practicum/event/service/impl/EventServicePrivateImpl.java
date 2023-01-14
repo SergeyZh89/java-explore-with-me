@@ -1,6 +1,8 @@
 package ru.practicum.event.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.exception.CategoryNotFoundException;
@@ -17,8 +19,8 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.service.EventServicePrivate;
 import ru.practicum.exceptions.ValidatorException;
 import ru.practicum.mappers.EventMapper;
+import ru.practicum.mappers.RequestMapper;
 import ru.practicum.request.exception.RequestNotFountException;
-import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.model.dto.RequestDto;
 import ru.practicum.request.repository.RequestRepository;
@@ -26,27 +28,20 @@ import ru.practicum.user.exception.UserNotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EventServicePrivateImpl implements EventServicePrivate {
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
-    private final RequestRepository requestRepository;
-
-    @Autowired
-    public EventServicePrivateImpl(EventRepository eventRepository,
-                                   CategoryRepository categoryRepository,
-                                   UserRepository userRepository,
-                                   RequestRepository requestRepository) {
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-        this.requestRepository = requestRepository;
-    }
+    EventRepository eventRepository;
+    CategoryRepository categoryRepository;
+    UserRepository userRepository;
+    RequestRepository requestRepository;
 
     @Override
     public List<EventFullDto> getEventsByCurrentUser(long userId, Pageable pageable) {
@@ -57,8 +52,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public EventFullDto updateEventByCurrentUser(long userId, UpdateEventRequest updateEventRequest) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(updateEventRequest.getEventId(), userId)
-                .orElseThrow(() -> new EventNotFoundException(updateEventRequest.getEventId()));
+        Event event = getEventOrThrowEventNotFound(updateEventRequest.getEventId(), userId);
         Category category = categoryRepository.findById(updateEventRequest.getCategory())
                 .orElseThrow(() -> new CategoryNotFoundException(updateEventRequest.getCategory()));
         Event eventUpdated = EventMapper.INSTANCE.partialUpdate(updateEventRequest, event);
@@ -96,16 +90,14 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public EventFullDto cancelEventByCurrentUser(long userId, long eventId) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
+        Event event = getEventOrThrowEventNotFound(eventId, userId);
         event.setState(EventState.CANCELED);
         return EventMapper.INSTANCE.toFullEvent(eventRepository.save(event));
     }
 
     @Override
     public List<RequestDto> getOtherRequestsByEventAndCurrentUser(long userId, long eventId) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
+        Event event = getEventOrThrowEventNotFound(eventId, userId);
         return requestRepository.findRequestsByEvent(eventId).stream()
                 .map(RequestMapper.INSTANCE::toRequestDto)
                 .collect(Collectors.toList());
@@ -113,8 +105,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public RequestDto confirmRequest(long userId, long eventId, long reqId) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
+        Event event = getEventOrThrowEventNotFound(eventId, userId);
         if (event.getConfirmedRequests() == event.getParticipantLimit()) {
             List<Request> requests = requestRepository.findAll().stream()
                     .filter(request -> request.getStatus() == RequestState.PENDING && request.getEvent() == eventId)
@@ -137,11 +128,15 @@ public class EventServicePrivateImpl implements EventServicePrivate {
 
     @Override
     public RequestDto rejectRequest(long userId, long eventId, long reqId) {
-        Event event = eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
-                .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
+        Event event = getEventOrThrowEventNotFound(eventId, userId);
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new RequestNotFountException(reqId));
         request.setStatus(RequestState.REJECTED);
         return RequestMapper.INSTANCE.toRequestDto(requestRepository.save(request));
+    }
+
+    private Event getEventOrThrowEventNotFound(long eventId, long userId) {
+        return eventRepository.findEventByIdAndInitiator_Id(eventId, userId)
+                .orElseThrow(() -> new EventNotFoundException("У данного пользователя нет событий"));
     }
 }

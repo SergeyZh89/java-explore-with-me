@@ -1,6 +1,7 @@
 package ru.practicum.user.model.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.Email;
@@ -13,21 +14,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
     @NotNull
     @Email
-    private String email;
+    String email;
 
     @ReadOnlyProperty
     @PositiveOrZero
-    private long id;
+    long id;
 
     @NotNull
-    private String name;
+    String name;
 
     @NotNull
-    private LocalDateTime dateBan;
+    LocalDateTime dateBan;
 
     @NotNull
-    private boolean isBanned;
+    boolean isBanned;
 }

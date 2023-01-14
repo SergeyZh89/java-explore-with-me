@@ -1,5 +1,8 @@
 package ru.practicum.client;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestTemplate;
@@ -9,12 +12,10 @@ import java.util.Map;
 
 import static org.springframework.http.HttpMethod.GET;
 
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class HttpClient {
-    private final RestTemplate rest;
-
-    public HttpClient(RestTemplate rest) {
-        this.rest = rest;
-    }
+    RestTemplate rest;
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, body, null);

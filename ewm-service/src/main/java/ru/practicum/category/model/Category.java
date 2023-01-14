@@ -1,6 +1,7 @@
 package ru.practicum.category.model;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
@@ -11,12 +12,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    Long id;
 
     @Column(name = "name")
-    private String name;
+    String name;
 }

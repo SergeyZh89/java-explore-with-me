@@ -1,7 +1,9 @@
 package ru.practicum.event.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,14 +19,11 @@ import java.util.Optional;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("/events")
 public class EventControllerPublic {
-    private final EventServicePublic eventService;
-
-    @Autowired
-    public EventControllerPublic(EventServicePublic eventService) {
-        this.eventService = eventService;
-    }
+    EventServicePublic eventService;
 
     @GetMapping
     public List<EventFullDto> getEventsByFilter(@RequestParam(name = "text", required = false) String text,

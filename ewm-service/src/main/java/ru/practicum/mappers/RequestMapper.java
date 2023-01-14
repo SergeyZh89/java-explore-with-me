@@ -1,4 +1,4 @@
-package ru.practicum.request.mapper;
+package ru.practicum.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

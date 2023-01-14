@@ -1,6 +1,8 @@
 package ru.practicum.category.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +18,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/categories")
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class CategoryControllerPublic {
-    private final CategoryService categoryService;
+    CategoryService categoryService;
 
     @GetMapping
     public List<CategoryDto> getCategories(@RequestParam(name = "from", defaultValue = "0", required = false) int from,

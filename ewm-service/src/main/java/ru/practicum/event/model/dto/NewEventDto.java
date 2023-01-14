@@ -2,6 +2,7 @@ package ru.practicum.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.location.Location;
 
@@ -14,38 +15,39 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewEventDto {
     @NotNull
     @Length(min = 20, max = 2000)
-    private String annotation;
+    String annotation;
 
     @NotNull
     @Positive
-    private long category;
+    long category;
 
     @NotNull
     @Length(min = 20, max = 7000)
-    private String description;
+    String description;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
     @NotNull
-    private Location location;
-
-    @NotNull
-    @Builder.Default
-    private boolean paid = false;
-
-    @Builder.Default
-    private int participantLimit = 0;
+    Location location;
 
     @NotNull
     @Builder.Default
-    private boolean requestModeration = true;
+    boolean paid = false;
+
+    @Builder.Default
+    int participantLimit = 0;
+
+    @NotNull
+    @Builder.Default
+    boolean requestModeration = true;
 
     @NotNull
     @Length(min = 3, max = 120)
-    private String title;
+    String title;
 }

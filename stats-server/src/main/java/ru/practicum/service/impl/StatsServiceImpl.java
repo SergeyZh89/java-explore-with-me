@@ -1,7 +1,9 @@
 package ru.practicum.service.impl;
 
 import com.querydsl.core.types.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.practicum.mappers.EndPointMapper;
 import ru.practicum.mappers.ViewStatsMapper;
@@ -14,18 +16,17 @@ import ru.practicum.repository.StatsRepository;
 import ru.practicum.service.StatsService;
 import ru.practicum.util.QPredicates;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class StatsServiceImpl implements StatsService {
-    private final StatsRepository statsRepository;
-
-    @Autowired
-    public StatsServiceImpl(StatsRepository statsRepository) {
-        this.statsRepository = statsRepository;
-    }
+    StatsRepository statsRepository;
 
     @Override
     public EndPointHitDto addHit(EndPointHitDto endPointHitDto) {

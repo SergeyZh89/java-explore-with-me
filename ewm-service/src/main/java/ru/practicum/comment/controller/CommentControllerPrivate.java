@@ -1,7 +1,9 @@
 package ru.practicum.comment.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comment.model.dto.CommentDto;
 import ru.practicum.comment.model.dto.CommentUpdate;
@@ -13,14 +15,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("/users/{userId}/events/{eventId}/comments")
 public class CommentControllerPrivate {
-    private final CommentService commentService;
-
-    @Autowired
-    public CommentControllerPrivate(CommentService commentService) {
-        this.commentService = commentService;
-    }
+    CommentService commentService;
 
     @PostMapping
     public CommentDto addNewComment(@PathVariable long userId,

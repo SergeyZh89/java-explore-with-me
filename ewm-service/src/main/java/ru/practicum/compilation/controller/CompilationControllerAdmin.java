@@ -1,5 +1,8 @@
 package ru.practicum.compilation.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +16,11 @@ import javax.validation.constraints.Positive;
 @RestController
 @Slf4j
 @RequestMapping("/admin/compilations")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class CompilationControllerAdmin {
-    private final CompilationServiceAdmin compilationServiceAdmin;
-
-    public CompilationControllerAdmin(CompilationServiceAdmin compilationServiceAdmin) {
-        this.compilationServiceAdmin = compilationServiceAdmin;
-    }
+    CompilationServiceAdmin compilationServiceAdmin;
 
     @PostMapping
     public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {

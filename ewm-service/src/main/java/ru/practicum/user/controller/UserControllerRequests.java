@@ -1,7 +1,9 @@
 package ru.practicum.user.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.request.model.dto.RequestDto;
 import ru.practicum.user.service.UserService;
@@ -12,13 +14,10 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users/{userId}/requests")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserControllerRequests {
-    private final UserService userService;
-
-    @Autowired
-    public UserControllerRequests(UserService userService) {
-        this.userService = userService;
-    }
+    UserService userService;
 
     @GetMapping
     public List<RequestDto> getUserRequests(@PathVariable @Positive long userId) {

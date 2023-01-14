@@ -1,5 +1,8 @@
 package ru.practicum.event.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +21,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users/{userId}/events")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class EventControllerPrivate {
-    private final EventServicePrivate eventServicePrivate;
-
-    public EventControllerPrivate(EventServicePrivate eventServicePrivate) {
-        this.eventServicePrivate = eventServicePrivate;
-    }
+    EventServicePrivate eventServicePrivate;
 
     @GetMapping
     public List<EventFullDto> getEventsCurrentUser(@PathVariable @Positive long userId,

@@ -1,6 +1,8 @@
 package ru.practicum.category.controller;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +17,10 @@ import javax.validation.constraints.Positive;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/admin/categories")
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class CategoryControllerAdmin {
-    private final CategoryService categoryService;
+    CategoryService categoryService;
 
     @PostMapping
     public CategoryDto addCategory(@RequestBody @Valid NewCategoryDto categoryDto) {

@@ -1,5 +1,8 @@
 package ru.practicum.compilation.controller;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,13 +17,11 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/compilations")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Validated
 public class CompilationControllerPublic {
-    private final CompilationServicePublic compilationServicePublic;
-
-    public CompilationControllerPublic(CompilationServicePublic compilationServicePublic) {
-        this.compilationServicePublic = compilationServicePublic;
-    }
+    CompilationServicePublic compilationServicePublic;
 
     @GetMapping
     public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,

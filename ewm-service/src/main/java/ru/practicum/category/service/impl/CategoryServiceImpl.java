@@ -1,6 +1,8 @@
 package ru.practicum.category.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.exception.CategoryNotFoundException;
@@ -12,18 +14,17 @@ import ru.practicum.category.service.CategoryService;
 import ru.practicum.exceptions.ConflictException;
 import ru.practicum.mappers.CategoryMapper;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryRepository categoryRepository;
-
-    @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    CategoryRepository categoryRepository;
 
     @Override
     public CategoryDto addCategory(NewCategoryDto newCategoryDto) {

@@ -2,6 +2,7 @@ package ru.practicum.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.category.model.dto.CategoryDto;
 import ru.practicum.comment.model.dto.CommentDto;
@@ -22,54 +23,55 @@ import java.util.List;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventFullDto {
-    private long id;
+    Long id;
 
     @Length(min = 20, max = 2000)
-    private String annotation;
+    String annotation;
 
-    private CategoryDto category;
+    CategoryDto category;
 
-    private long confirmedRequests;
+    long confirmedRequests;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdOn;
+    LocalDateTime createdOn;
 
     @Length(min = 20, max = 7000)
-    private String description;
+    String description;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
 
     @NotNull
-    private UserShortDto initiator;
+    UserShortDto initiator;
 
     @NotNull
-    private LocationDto location;
+    LocationDto location;
 
     @NotNull
-    private boolean paid;
+    boolean paid;
 
     @Min(value = 0)
     @Builder.Default
-    private int participantLimit = 0;
+    int participantLimit = 0;
 
     @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedOn = LocalDateTime.now();
+    LocalDateTime publishedOn = LocalDateTime.now();
 
     @Builder.Default
-    private boolean requestModeration = true;
+    boolean requestModeration = true;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private EventState state = EventState.PENDING;
+    EventState state = EventState.PENDING;
 
     @Length(min = 3, max = 120)
-    private String title;
+    String title;
 
     @NotNull
-    private long views;
+    long views;
 
-    private List<CommentDto> comments = new ArrayList<>();
+    List<CommentDto> comments = new ArrayList<>();
 }

@@ -1,6 +1,7 @@
 package ru.practicum.comment.model.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
 
@@ -8,9 +9,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
 public class CommentUpdate {
-    private Long id;
+    Long id;
     @NotNull
-    private String text;
+    String text;
 }

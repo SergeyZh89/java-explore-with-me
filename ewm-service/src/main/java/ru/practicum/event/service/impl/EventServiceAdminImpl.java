@@ -1,6 +1,8 @@
 package ru.practicum.event.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.exception.CategoryNotFoundException;
@@ -16,21 +18,18 @@ import ru.practicum.event.service.EventServiceAdmin;
 import ru.practicum.mappers.DateTimeMapper;
 import ru.practicum.mappers.EventMapper;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EventServiceAdminImpl implements EventServiceAdmin {
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
-
-    @Autowired
-    public EventServiceAdminImpl(EventRepository eventRepository,
-                                 CategoryRepository categoryRepository) {
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-    }
+    EventRepository eventRepository;
+    CategoryRepository categoryRepository;
 
     @Override
     public List<EventFullDto> getEventsByFilter(List<Long> usersId, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Pageable pageable) {
@@ -46,8 +45,7 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
 
     @Override
     public EventFullDto updateEvent(long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
+        Event event = getEventOrThrowEventNotFound(eventId);
         event.setAnnotation(adminUpdateEventRequest.getAnnotation());
         Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
                 .orElseThrow(() -> new CategoryNotFoundException(adminUpdateEventRequest.getCategory()));
@@ -59,17 +57,20 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
 
     @Override
     public EventFullDto publishEvent(long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
+        Event event = getEventOrThrowEventNotFound(eventId);
         event.setState(EventState.PUBLISHED);
         return EventMapper.INSTANCE.toFullEvent(eventRepository.save(event));
     }
 
     @Override
     public EventFullDto rejectEvent(long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(eventId));
+        Event event = getEventOrThrowEventNotFound(eventId);
         event.setState(EventState.CANCELED);
         return EventMapper.INSTANCE.toFullEvent(eventRepository.save(event));
+    }
+
+    private Event getEventOrThrowEventNotFound(long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
     }
 }
